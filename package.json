@@ -1,0 +1,46 @@
+{
+  "name": "static-website-boilerplate-gulp",
+  "version": "1.0.0",
+  "description": "A template to start a website with Gulp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Puzzlout/static.website.boilerplate.git"
+  },
+  "keywords": [
+    "gulp",
+    "npm",
+    "browsersync",
+    "sass",
+    "netlify",
+    "static-site"
+  ],
+  "author": "Jeremie Litzler",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Puzzlout/static.website.boilerplate/issues"
+  },
+  "homepage": "https://github.com/Puzzlout/static.website.boilerplate#readme",
+  "devDependencies": {
+    "autoprefixer": "^9.7.4",
+    "browser-sync": "^2.26.7",
+    "cssnano": "^4.1.10",
+    "del": "^5.1.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-flatmap": "^1.0.2",
+    "gulp-header": "^2.0.9",
+    "gulp-jshint": "^2.1.0",
+    "gulp-optimize-js": "^1.1.0",
+    "gulp-postcss": "^8.0.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-svgmin": "^2.2.0",
+    "gulp-terser": "^1.2.0",
+    "jshint": "^2.11.0",
+    "jshint-stylish": "^2.2.1",
+    "lazypipe": "^1.0.2"
+  }
+}
