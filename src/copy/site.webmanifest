@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "A website built with Gulp",
+    "short_name": "Web gulp template",
     "icons": [{
         "src": "/img/android-chrome-192x192.png",
         "sizes": "192x192",
