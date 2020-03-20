@@ -45,7 +45,7 @@ npm install --save-dev gulp-svgmin
 
 ```
 
-### Install Font Awesome Pro
+### Install Font Awesome Pro (OPTIONAL)
 
 Create a `.npmrc` file with the following content:
 
