@@ -61,7 +61,6 @@ npm install --save-dev gulp-postcss
 npm install --save-dev autoprefixer
 npm install --save-dev cssnano
 npm install --save-dev gulp-svgmin
-
 ```
 
 ### Install Font Awesome Pro (OPTIONAL)
