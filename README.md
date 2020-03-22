@@ -2,11 +2,35 @@
 
 A template to start a website with Gulp
 
-## Initial setup
+## Use this package
 
-### Install latest Node
+### Prerequisites
 
 Go to [Node website](https://nodejs.org/en/download/).
+
+### Install
+
+```sh
+npm install
+gulp watch
+```
+
+It will install the dev dependencies and launch the web server with browser sync.
+
+## Folders
+
+In `src`, you will :
+
+- `copy`: contains all the files like `.html`, the manifest and your content images. By default, it also contains the [Favicon generator template](https://favicon.io/favicon-generator/).
+- `js`: all your javascript.
+- `sass`: all your SCSS/SASS/CSS. By default, there is no SCSS or SASS code even if the files are named `.scss`. I have not yet learned those and I'm still writing vanilla CSS.
+
+## Gulp file
+
+The gulp file is inspired from [Chris Ferdinandi's post](https://gomakethings.com/a-new-gulp-boilerplate/).
+I have altered the script to include Font Awesome Pro 5.
+
+## Want to create your package from this one
 
 ### Initialize your project
 
@@ -16,15 +40,10 @@ Go to [Node website](https://nodejs.org/en/download/).
 
 Go to [Gulp getting started](https://gulpjs.com/docs/en/getting-started/quick-start).
 
-### Install gulp in the project
-
-```sh
-npm install --save-dev gulp
-```
-
 ### Install the dev dependencies
 
 ```sh
+npm install --save-dev gulp
 npm install --save-dev browser-sync
 npm install --save-dev del
 npm install --save-dev gulp-header
