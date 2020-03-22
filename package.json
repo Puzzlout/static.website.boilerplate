@@ -2,7 +2,7 @@
   "name": "@puzzlout/static-website-boilerplate-gulp",
   "version": "1.0.0",
   "description": "A template to start a website with Gulp",
-  "main": "",
+  "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
