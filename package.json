@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/Puzzlout/static.website.boilerplate#readme",
   "devDependencies": {
-    "autoprefixer": "^9.7.4",
+    "autoprefixer": "^9.7.5",
     "browser-sync": "^2.26.7",
     "cssnano": "^4.1.10",
     "del": "^5.1.0",
