@@ -1,0 +1,22 @@
+body {
+    background-image: url(../img/bg-1900w.jpg);
+}
+
+main,
+footer {
+    background-color: #ffffff75;
+}
+
+main>*,
+footer>* {
+    grid-column: 2 / -2;
+}
+
+@media (min-width: 800px) {
+
+    main>*,
+    footer>* {
+        grid-column: 3 / -3;
+    }
+
+}

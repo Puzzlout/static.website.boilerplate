@@ -11,6 +11,7 @@ var settings = {
   copyFontAwesome: true,
   svgs: true,
   copy: true,
+  images: true,
   reload: true
 };
 
@@ -28,7 +29,8 @@ var paths = {
   },
   styles: {
     input: "src/sass/**/*.{scss,sass}",
-    output: "dist/css/"
+    output: "dist/css/",
+    concat: "app.min.css"
   },
   fastyles: {
     input: "node_modules/@fortawesome/fontawesome-pro/css/**/*.min.css",
@@ -42,6 +44,10 @@ var paths = {
   svgs: {
     input: "src/svg/*.svg",
     output: "dist/svg/"
+  },
+  images: {
+    input: ["src/copy/img/*.jpg"],
+    output: "dist/img/"
   },
   copy: {
     input: "src/copy/**/*",
@@ -78,11 +84,12 @@ var lazypipe = require("lazypipe");
 var rename = require("gulp-rename"); //ok
 var header = require("gulp-header"); //ok
 var package = require("./package.json");
+var responsive = require("gulp-responsive");
 
 // Scripts
 var jshint = require("gulp-jshint");
 var stylish = require("jshint-stylish");
-var concat = require("gulp-concat");
+var concat = require("gulp-concat-2020");
 var uglify = require("gulp-terser");
 var optimizejs = require("gulp-optimize-js");
 
@@ -211,6 +218,7 @@ var buildStyles = function(done) {
         })
       ])
     )
+    .pipe(concat(paths.styles.concat))
     .pipe(dest(paths.styles.output));
 };
 
@@ -245,6 +253,40 @@ var copyFiles = function(done) {
 
   // Copy static files
   return src(paths.copy.input).pipe(dest(paths.copy.output));
+};
+
+// Generate responsive images
+var processImages = function(done) {
+  // Make sure this feature is activated before running
+  if (!settings.images) return done();
+
+  // Copy static files
+  console.log(paths.images.input);
+  return src(paths.images.input)
+    .pipe(
+      responsive(
+        {
+          // Resize all JPG images to three different sizes: 200, 500, and 630 pixels
+          "*": [
+            { width: 300, rename: { suffix: "-300w" } },
+            { width: 600, rename: { suffix: "-600w" } },
+            { width: 1900, rename: { suffix: "-1900w" } },
+            {
+              // Compress, strip metadata, and rename original image //used for the index.html across all viewports // //used for the index.html across all viewports
+              rename: { suffix: "-800w" }
+            }
+          ]
+        },
+        {
+          // Global configuration for all images
+          // The output quality for JPEG, WebP and TIFF output formats
+          quality: 70,
+          progressive: true,
+          withMetadata: false
+        }
+      ) // Use progressive (interlace) scan for JPEG and PNG output // Strip all metadata
+    )
+    .pipe(dest(paths.images.output));
 };
 
 // Watch for changes to the src directory
@@ -290,7 +332,8 @@ exports.default = series(
     buildStyles,
     buildSVGs,
     copyFontAwesome,
-    copyFiles
+    copyFiles,
+    processImages
   )
 );
 
@@ -298,5 +341,4 @@ exports.default = series(
 // gulp watch
 exports.watch = series(exports.default, startServer, watchSource);
 
-//Wipe clean dist dir
-exports.clean = series(cleanDist);
+exports.images = series(cleanDist, processImages);
