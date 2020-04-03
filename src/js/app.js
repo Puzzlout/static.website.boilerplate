@@ -1,12 +1,4 @@
 const SHEET_DATATYPE = "Sheet_DataType";
-const DefaultLanguage = "en";
-
-function getBrowserFirstLang() {
-  if (!navigator.languages) {
-    console.log("navigator.languages not supported");
-    return DefaultLanguage;
-  }
-}
 var app = new Vue({
   el: "#app",
   data: {
@@ -17,8 +9,7 @@ var app = new Vue({
     enableLog: true,
     useGoogleForms: true,
     showTos: false,
-    i18n: true,
-    currentLang: getBrowserFirstLang()
+    i18n: true
   },
   methods: {
     showtos: function(event) {
@@ -28,7 +19,10 @@ var app = new Vue({
       this.showTos = false;
     },
     loadSheetData: function() {
-      var dataTransformer = new DataTransformer({ sheetUrl: this.sheetUrl });
+      var dataTransformer = new DataTransformer({
+        sheetUrl: this.sheetUrl,
+        enableLog: this.enableLog
+      });
       var runPromise = dataTransformer.getSpreadsheetData();
       selfVue = this;
       runPromise

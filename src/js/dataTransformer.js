@@ -3,10 +3,33 @@ var DataTransformer = function(options) {
     throw new Error("options must contains sheetUrl");
 
   this.sheetUrl = options.sheetUrl;
-  this.enableLog = true;
+  this.enableLog = options.enableLog;
+  const DefaultLanguage = "en";
 };
 
 DataTransformer.prototype = {
+  getBrowserFirstLang: function() {
+    if (!navigator.languages) {
+      if (this.enableLog)
+        console.log(
+          "navigator.languages not supported... Using default language " +
+            DefaultLanguage
+        );
+      return DefaultLanguage;
+    }
+
+    if (navigator.languages === null) {
+      if (this.enableLog)
+        console.log(
+          "navigator.languages is empty... Using default language " +
+            DefaultLanguage
+        );
+      return DefaultLanguage;
+    }
+
+    return navigator.languages[0];
+  },
+
   getSpreadsheetData: function() {
     self = this;
     return new Promise(function(resolve, reject) {
@@ -33,6 +56,7 @@ DataTransformer.prototype = {
   },
 
   processSheetData: function(tabletop) {
+    console.log("Language", this.getBrowserFirstLang());
     self = this;
     let transformedFullData = {};
     if (this.enableLog) console.log(tabletop);
