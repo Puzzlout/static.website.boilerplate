@@ -8,11 +8,13 @@ var settings = {
   scripts: true,
   polyfills: true,
   styles: true,
-  copyFontAwesome: true,
   svgs: true,
   copy: true,
   images: true,
-  reload: true
+  reload: true,
+  useFontAwesome: true,
+  useVue: true,
+  useGsheets2Json: true
 };
 
 /**
@@ -23,7 +25,7 @@ var paths = {
   input: "src/",
   output: "dist/",
   scripts: {
-    input: "src/js/*",
+    input: ["src/js/*"],
     polyfills: ".polyfill.js",
     output: "dist/js/"
   },
@@ -31,15 +33,6 @@ var paths = {
     input: "src/sass/**/*.{scss,sass}",
     output: "dist/css/",
     concat: "app.min.css"
-  },
-  fastyles: {
-    input: "node_modules/@fortawesome/fontawesome-pro/css/**/*.min.css",
-    output: "dist/css/fontawesome/"
-  },
-  fawebfonts: {
-    input:
-      "node_modules/@fortawesome/fontawesome-pro/webfonts/**/*.{woff,woff2}",
-    output: "dist/css/webfonts/"
   },
   svgs: {
     input: "src/svg/*.svg",
@@ -52,6 +45,23 @@ var paths = {
   copy: {
     input: "src/copy/**/*",
     output: "dist/"
+  },
+  fastyles: {
+    input: "node_modules/@fortawesome/fontawesome-pro/css/**/*.min.css",
+    output: "dist/css/fontawesome/"
+  },
+  fawebfonts: {
+    input:
+      "node_modules/@fortawesome/fontawesome-pro/webfonts/**/*.{woff,woff2}",
+    output: "dist/css/webfonts/"
+  },
+  vue: {
+    input: "node_modules/vue/dist/vue.min.js",
+    output: "dist/js/"
+  },
+  gsheets2json: {
+    input: "node_modules/gsheets2json/dist/gsheet2json.min.js",
+    output: "dist/js/"
   },
   reload: "./dist/"
 };
@@ -185,6 +195,18 @@ var lintScripts = function(done) {
     .pipe(jshint.reporter("jshint-stylish"));
 };
 
+//copy vue library if needed
+var copyVue = function(done) {
+  if (!settings.useVue) return done();
+
+  return src(paths.vue.input).pipe(dest(paths.vue.output));
+};
+//copy gsheets2json library if needed
+var copyGsheets2Json = function(done) {
+  if (!settings.useGsheets2Json) return done();
+
+  return src(paths.gsheets2json.input).pipe(dest(paths.gsheets2json.output));
+};
 // Process, lint, and minify Sass files
 var buildStyles = function(done) {
   // Make sure this feature is activated before running
@@ -225,7 +247,7 @@ var buildStyles = function(done) {
 // Process Font Awesome files
 var copyFontAwesome = function(done) {
   // Make sure this feature is activated before running
-  if (!settings.copyFontAwesome) return done();
+  if (!settings.useFontAwesome) return done();
 
   // Run task
   const copyCss = src(paths.fastyles.input).pipe(dest(paths.fastyles.output));
@@ -332,6 +354,8 @@ exports.default = series(
     buildStyles,
     buildSVGs,
     copyFontAwesome,
+    copyVue,
+    copyGsheets2Json,
     copyFiles,
     processImages
   )
@@ -342,3 +366,4 @@ exports.default = series(
 exports.watch = series(exports.default, startServer, watchSource);
 
 exports.images = series(cleanDist, processImages);
+exports.clean = cleanDist;

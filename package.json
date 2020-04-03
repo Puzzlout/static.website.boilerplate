@@ -43,7 +43,10 @@
     "gulp-terser": "^1.2.0",
     "jshint": "^2.11.0",
     "jshint-stylish": "^2.2.1",
-    "lazypipe": "^1.0.2"
+    "lazypipe": "^1.0.2",
+    "vue": "^2.6.11"
   },
-  "dependencies": {}
+  "dependencies": {
+    "gsheets2json": "^1.0.0"
+  }
 }
