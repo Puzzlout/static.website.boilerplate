@@ -2,6 +2,19 @@
 <html lang="en">
 
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-91643546-3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-91643546-3');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1">
@@ -66,25 +79,21 @@
 <body class="text-center center-body font-Montserrat">
     <div id="app">
         <div v-if="loading" class="loading-screen">
-            <p>Le site est en cours de chargement...</p>
+            <p>Loading...</p>
         </div>
-        <div v-if="!loading" class="content">
+        <div v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
             <header></header>
             <main class="main-grid">
-                <h1>A website built with Gulp</h1>
+                <h1>{{ data.Sections.main.h1Title }}</h1>
             </main>
             <footer class="main-grid">
-                <p>Made by Jeremie Litzler.</p>
-                <a class="fine-print" href="https://github.com/Puzzlout/static.website.boilerplate" rel="noopener" target="_blank">
+                <p>{{ data.Sections.footer.pAuthor }}</p>
+                <a class="fine-print" :href="data.Sections.footer.aRepoLinkHref" rel="noopener" target="_blank">
                     <i class="fab fa-github"></i>
-                    The source repository of this website
+                    {{ data.Sections.footer.aRepoLinkText }}
                 </a>
-                <p class="text-tiny">Credit to <a href="http://twitter.com/ChrisFerdinandi" rel="noopener" target="_blank">@ChrisFerdinandi</a> for the Gulp inspiration.</p>
-                <p class="text-tiny"> Thanks to <a style="background-color:black;color:white;text-decoration:none;padding:4px 6px;font-family:-apple-system, BlinkMacSystemFont, &quot;San Francisco&quot;, &quot;Helvetica Neue&quot;, Helvetica, Ubuntu, Roboto, Noto, &quot;Segoe UI&quot;, Arial, sans-serif;font-size:12px;font-weight:bold;line-height:1.2;display:inline-block;border-radius:3px" href="https://unsplash.com/@anniespratt?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge" target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from Annie Spratt"><span style="display:inline-block;padding:2px 3px"><svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-2px;fill:white" viewBox="0 0 32 32">
-                                <title>unsplash-logo</title>
-                                <path d="M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z"></path>
-                            </svg></span><span style="display:inline-block;padding:2px 3px">Thanks to Annie Spratt</span></a> for the background image
-                </p>
+                <p class="text-tiny" v-html="data.Sections.footer.pCreditIntroHtml"></p>
+                <p class="text-tiny" v-html="data.Sections.footer.pUnsplashHtml"></p>
             </footer>
         </div>
     </div>
