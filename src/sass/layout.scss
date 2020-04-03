@@ -7,6 +7,11 @@ footer {
     background-color: #ffffff75;
 }
 
+hr {
+    width: 10vw;
+
+}
+
 main>*,
 footer>* {
     grid-column: 2 / -2;
