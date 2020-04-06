@@ -9,15 +9,23 @@ var DataTransformer = function (options) {
   /**
    * Flag to enable console logs
    */
-  this.enableLog = options.enableLog;
+  this.enableLog = options.enableLog | false;
   /**
-   * The default language
+   * The Google Sheet configuration
    */
-  this.DEFAULT_LANG = "en";
+  (this.config = {}),
+    /**
+     * The default language
+     */
+    (this.DEFAULT_LANG = "en");
   /**
    * The sheet defining the other sheet types
    */
   this.SHEET_DATATYPE = "Sheet_DataType";
+  /**
+   * The sheet defining the other sheet types
+   */
+  this.SHEET_CONFIGURATION = "Configuration";
 };
 
 /**
@@ -82,6 +90,16 @@ DataTransformer.prototype = {
     }
   },
   /**
+   * Loads the configuration sheet data.
+   * @param {tabletop} tabletop The instance of TableTop
+   */
+  loadConfig: function (tabletop) {
+    this.config = new SheetConfigReader({
+      sourceData: tabletop.models[this.SHEET_CONFIGURATION],
+      enableLog: this.enableLog,
+    }).GetConfig();
+  },
+  /**
    * Load the Google sheet data in a promise using gsheet2json
    */
   getSpreadsheetData: function () {
@@ -117,13 +135,14 @@ DataTransformer.prototype = {
    * @returns {object} the transformed data
    */
   processSheetData: function (tabletop) {
-    console.log("Language", this.getBrowserFirstLang());
+    if (this.enableLog) console.log("Language", this.getBrowserFirstLang());
     //since forEach doesn't use arrow function,
     //"this" in the forEach is not Vue instance!
     //so create a copy of this (Vue instance) to use into the forEach.
     self = this;
     let transformedFullData = {};
     if (this.enableLog) console.log(tabletop);
+    this.loadConfig(tabletop);
     this.checkSheetTypeExists(tabletop);
     var sheetDataType = this.transformDataToObject(
       tabletop.models[this.SHEET_DATATYPE]
