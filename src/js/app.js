@@ -8,37 +8,37 @@ var app = new Vue({
     enableLog: true,
     useGoogleForms: true,
     showTos: false,
-    i18n: true
+    i18n: true,
   },
   methods: {
-    showtos: function(event) {
+    showtos: function (event) {
       this.showTos = true;
     },
-    hidetos: function(event) {
+    hidetos: function (event) {
       this.showTos = false;
     },
-    loadSheetData: function() {
-      var dataTransformer = new DataTransformer({
+    loadSheetData: function () {
+      var sheetReader = new SheetReader({
         sheetUrl: this.sheetUrl,
-        enableLog: this.enableLog
+        enableLog: this.enableLog,
       });
-      var runPromise = dataTransformer.getSpreadsheetData();
+      var runPromise = sheetReader.getSpreadsheetData();
       selfVue = this;
       runPromise
-        .then(function(tabletop) {
-          selfVue.data = dataTransformer.processSheetData(tabletop);
+        .then(function (tabletop) {
+          selfVue.data = sheetReader.processSheetData(tabletop);
           if (selfVue.enableLog) console.log(selfVue.data);
 
           selfVue.loading = false;
         })
-        .catch(function(promise_err) {
+        .catch(function (promise_err) {
           console.log(promise_err);
         });
-    }
+    },
   },
-  created: function() {
+  created: function () {
     if (this.enableLog) console.log("Languages", navigator.languages);
     this.loadSheetData();
     if (!this.data) throw new Error("No data");
-  }
+  },
 });
