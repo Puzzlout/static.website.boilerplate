@@ -135,10 +135,11 @@ SheetReader.prototype = {
     if (this.enableLog) console.log("Language", this.getBrowserFirstLang());
     if (this.enableLog) console.log(tabletop);
     this.loadConfig(tabletop);
+    const dataTransformerInput = { config: this.config };
     this.checkSheetTypeExists(tabletop);
-    var sheetDataType = new DataTransformer().transformDataToObject(
-      tabletop.models[this.SHEET_DATATYPE]
-    );
+    var sheetDataType = new DataTransformer(
+      dataTransformerInput
+    ).TransformDataToObject(tabletop.models[this.SHEET_DATATYPE]);
     //since forEach doesn't use arrow function,
     //"this" in the forEach is not Vue instance!
     //so create a copy of this (Vue instance) to use into the forEach.
@@ -149,10 +150,9 @@ SheetReader.prototype = {
       //if (self.enableLog) console.log("Sheet " + sheetName, sheet.elements);
       sheetReader.checkSheetType(sheetDataType, sheetName);
 
-      var transformedData = new DataTransformer().transformSheetData(
-        sheet,
-        sheetDataType[sheetName]
-      );
+      var transformedData = new DataTransformer(
+        dataTransformerInput
+      ).TransformSheetData(sheet, sheetDataType[sheetName]);
       if (transformedData) {
         Object.defineProperty(transformedFullData, sheetName, {
           value: transformedData,

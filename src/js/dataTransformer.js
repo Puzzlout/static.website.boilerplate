@@ -1,22 +1,31 @@
-var DataTransformer = function () {};
+var DataTransformer = function (options) {
+  if (options === undefined) throw new Error("options must contains sheetUrl");
+  if (options.config === undefined)
+    console.error(new Error("options must contains a config object"));
+
+  /**
+   * The Configuration
+   */
+  this.Config = options.config;
+};
 
 /**
  * Define the prototype of DataTransformer
  */
 DataTransformer.prototype = {
-  transformSheetData: function (sheet, dataType) {
+  TransformSheetData: function (sheet, dataType) {
     if (dataType === "ignore") return false;
-    if (dataType === "array") return this.transformDataToArray(sheet);
-    if (dataType === "object") return this.transformDataToObject(sheet);
+    if (dataType === "array") return this.TransformDataToArray(sheet);
+    if (dataType === "object") return this.TransformDataToObject(sheet);
     if (dataType === "nestedObject")
-      return this.transformDataToNestedObject(sheet);
+      return this.TransformDataToNestedObject(sheet);
 
     console.warn("Type " + dataType + " is not implemented at the moment. ");
     console.warn("Sheet '" + sheet.name + "' will be ignored.");
   },
 
-  transformDataToNestedObject: function (sheetData) {
-    self = this;
+  TransformDataToNestedObject: function (sheetData) {
+    const dataTransformer = this;
     var arrObjs = [];
     sheetData.elements.forEach(function (row) {
       var sectionName = row.Section;
@@ -26,13 +35,13 @@ DataTransformer.prototype = {
         });
       }
       Object.defineProperty(arrObjs[sectionName], row.Key, {
-        value: row.Value,
+        value: dataTransformer.GetValueI8n(row),
       });
     });
     return arrObjs;
   },
 
-  transformDataToArray: function (sheetData) {
+  TransformDataToArray: function (sheetData) {
     self = this;
     var labels = [];
     sheetData.elements.forEach(function (row) {
@@ -55,7 +64,7 @@ DataTransformer.prototype = {
     return labels;
   },
 
-  transformDataToObject: function (sheetData) {
+  TransformDataToObject: function (sheetData) {
     var newObject = {};
     sheetData.elements.forEach(function (row) {
       Object.defineProperty(newObject, row.Key, {
@@ -63,5 +72,9 @@ DataTransformer.prototype = {
       });
     });
     return newObject;
+  },
+
+  GetValueI8n: function (fullRow) {
+    return fullRow.Value;
   },
 };
