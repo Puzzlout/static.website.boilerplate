@@ -4,7 +4,8 @@
   "description": "A template to start a website with Gulp",
   "main": "gulpfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "standard-version"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "jshint": "^2.11.0",
     "jshint-stylish": "^2.2.1",
     "lazypipe": "^1.0.2",
+    "standard-version": "^7.1.0",
     "vue": "^2.6.11"
   },
   "dependencies": {
