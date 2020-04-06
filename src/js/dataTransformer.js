@@ -1,42 +1,96 @@
-var DataTransformer = function(options) {
+var DataTransformer = function (options) {
   if (options === "undefined")
     throw new Error("options must contains sheetUrl");
 
+  /**
+   * The url of the Google Sheet to read
+   */
   this.sheetUrl = options.sheetUrl;
+  /**
+   * Flag to enable console logs
+   */
   this.enableLog = options.enableLog;
-  const DefaultLanguage = "en";
+  /**
+   * The default language
+   */
+  this.DEFAULT_LANG = "en";
+  /**
+   * The sheet defining the other sheet types
+   */
+  this.SHEET_DATATYPE = "Sheet_DataType";
 };
 
+/**
+ * Define the prototype of DataTransformer
+ */
 DataTransformer.prototype = {
-  getBrowserFirstLang: function() {
+  /**
+   * Read first language from navigator.languages when available
+   * to load the site in the prefered user language.
+   *
+   * @returns {string} navigator.languages[0] | DEFAULT_LANG
+   */
+  getBrowserFirstLang: function () {
     if (!navigator.languages) {
       if (this.enableLog)
         console.log(
           "navigator.languages not supported... Using default language " +
-            DefaultLanguage
+            DEFAULT_LANG
         );
-      return DefaultLanguage;
+      return DEFAULT_LANG;
     }
 
     if (navigator.languages === null) {
       if (this.enableLog)
         console.log(
           "navigator.languages is empty... Using default language " +
-            DefaultLanguage
+            DEFAULT_LANG
         );
-      return DefaultLanguage;
+      return DEFAULT_LANG;
     }
 
     return navigator.languages[0];
   },
-
-  getSpreadsheetData: function() {
+  /**
+   * Check that the source Google Sheets document contains a sheet named after SHEET_DATATYPE constant.
+   *
+   * @param {tabletop} tabletop instance of Table
+   */
+  checkSheetTypeExists: function (tabletop) {
+    if (tabletop.models[this.SHEET_DATATYPE] === undefined) {
+      const invalidGoogleSheetMsg =
+        "Please create a sheet 'Sheet_DataType' to define how should be transformed each sheet data";
+      alert(invalidGoogleSheetMsg);
+      throw new Error(invalidGoogleSheetMsg);
+    }
+  },
+  /**
+   * Checks that the sheet is declared in the sheet declaring the DataType of the data
+   * contained in the sheet requested.
+   *
+   * @param {string} sheetDataType The type of data contained in the sheet
+   * @param {string} sheetName The sheet name
+   */
+  checkSheetType: function (sheetDataType, sheetName) {
+    if (sheetDataType[sheetName] === undefined) {
+      const sheetNotDeclaredInSheetDataType =
+        "Please add " +
+        sheetName +
+        " in sheet 'Sheet_DataType' to define how it should be transformed from the Google Sheet document";
+      alert(sheetNotDeclaredInSheetDataType);
+      throw new Error(sheetNotDeclaredInSheetDataType);
+    }
+  },
+  /**
+   * Load the Google sheet data in a promise using gsheet2json
+   */
+  getSpreadsheetData: function () {
     self = this;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       var options = {
         key: self.sheetUrl,
         callback: onLoad,
-        simpleSheet: true
+        simpleSheet: true,
       };
 
       function onLoad(data, tabletop) {
@@ -55,32 +109,29 @@ DataTransformer.prototype = {
     });
   },
 
-  processSheetData: function(tabletop) {
+  /**
+   * Transform the data read with gsheet2json into the
+   * desired structure to use in the application.
+   *
+   * @param {tabletop} tabletop instance of TableTop
+   * @returns {object} the transformed data
+   */
+  processSheetData: function (tabletop) {
     console.log("Language", this.getBrowserFirstLang());
+    //since forEach doesn't use arrow function,
+    //"this" in the forEach is not Vue instance!
+    //so create a copy of this (Vue instance) to use into the forEach.
     self = this;
     let transformedFullData = {};
     if (this.enableLog) console.log(tabletop);
-    //since forEach doesn't use arrow function, "this" in the forEach is not Vue instance!
-    if (tabletop.models[SHEET_DATATYPE] === undefined) {
-      const invalidGoogleSheetMsg =
-        "Please create a sheet 'Sheet_DataType' to define how should be transformed each sheet data";
-      alert(invalidGoogleSheetMsg);
-      throw new Error(invalidGoogleSheetMsg);
-    }
+    this.checkSheetTypeExists(tabletop);
     var sheetDataType = this.transformDataToObject(
-      tabletop.models[SHEET_DATATYPE]
+      tabletop.models[this.SHEET_DATATYPE]
     );
-    tabletop.modelNames.forEach(function(sheetName) {
+    tabletop.modelNames.forEach(function (sheetName) {
       var sheet = tabletop.models[sheetName];
       //if (self.enableLog) console.log("Sheet " + sheetName, sheet.elements);
-      if (sheetDataType[sheetName] === undefined) {
-        const sheetNotDeclaredInSheetDataType =
-          "Please add " +
-          sheetName +
-          " in sheet 'Sheet_DataType' to define how it should be transformed from the Google Sheet document";
-        alert(sheetNotDeclaredInSheetDataType);
-        throw new Error(sheetNotDeclaredInSheetDataType);
-      }
+      self.checkSheetType(sheetDataType, sheetName);
 
       var transformedData = self.transformSheetData(
         sheet,
@@ -88,7 +139,7 @@ DataTransformer.prototype = {
       );
       if (transformedData) {
         Object.defineProperty(transformedFullData, sheetName, {
-          value: transformedData
+          value: transformedData,
         });
       }
     });
@@ -96,7 +147,7 @@ DataTransformer.prototype = {
     return transformedFullData;
   },
 
-  transformSheetData: function(sheet, dataType) {
+  transformSheetData: function (sheet, dataType) {
     if (dataType === "ignore") return false;
     if (dataType === "array") return this.transformDataToArray(sheet);
     if (dataType === "object") return this.transformDataToObject(sheet);
@@ -107,27 +158,27 @@ DataTransformer.prototype = {
     console.warn("Sheet '" + sheet.name + "' will be ignored.");
   },
 
-  transformDataToNestedObject: function(sheetData) {
+  transformDataToNestedObject: function (sheetData) {
     self = this;
     var arrObjs = [];
-    sheetData.elements.forEach(function(row) {
+    sheetData.elements.forEach(function (row) {
       var sectionName = row.Section;
       if (!arrObjs[sectionName]) {
         Object.defineProperty(arrObjs, sectionName, {
-          value: {}
+          value: {},
         });
       }
       Object.defineProperty(arrObjs[sectionName], row.Key, {
-        value: row.Value
+        value: row.Value,
       });
     });
     return arrObjs;
   },
 
-  transformDataToArray: function(sheetData) {
+  transformDataToArray: function (sheetData) {
     self = this;
     var labels = [];
-    sheetData.elements.forEach(function(row) {
+    sheetData.elements.forEach(function (row) {
       labels.push({
         key: row.Key,
         value: row.Value,
@@ -141,19 +192,19 @@ DataTransformer.prototype = {
           row.OpenNewTab !== undefined &&
           row.OpenNewTab.toLowerCase() === "true"
             ? true
-            : false
+            : false,
       });
     });
     return labels;
   },
 
-  transformDataToObject: function(sheetData) {
+  transformDataToObject: function (sheetData) {
     var newObject = {};
-    sheetData.elements.forEach(function(row) {
+    sheetData.elements.forEach(function (row) {
       Object.defineProperty(newObject, row.Key, {
-        value: row.Value
+        value: row.Value,
       });
     });
     return newObject;
-  }
+  },
 };
