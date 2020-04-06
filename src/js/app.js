@@ -1,4 +1,3 @@
-const SHEET_DATATYPE = "Sheet_DataType";
 var app = new Vue({
   el: "#app",
   data: {
