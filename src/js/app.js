@@ -40,5 +40,8 @@ var app = new Vue({
     if (this.enableLog) console.log("Languages", navigator.languages);
     this.loadSheetData();
     if (!this.data) throw new Error("No data");
+
+    const docLang = document.querySelector("html");
+    docLang.lang = new BrowserLanguageParser().GetBrowserFirstLang();
   },
 });

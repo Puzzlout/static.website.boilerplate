@@ -13,11 +13,7 @@ var SheetReader = function (options) {
   /**
    * The Google Sheet configuration
    */
-  (this.config = {}),
-    /**
-     * The default language
-     */
-    (this.DEFAULT_LANG = "en");
+  this.config = {};
   /**
    * The sheet defining the other sheet types
    */
@@ -29,33 +25,6 @@ var SheetReader = function (options) {
 };
 
 SheetReader.prototype = {
-  /**
-   * Read first language from navigator.languages when available
-   * to load the site in the prefered user language.
-   *
-   * @returns {string} navigator.languages[0] | DEFAULT_LANG
-   */
-  getBrowserFirstLang: function () {
-    if (!navigator.languages) {
-      if (this.enableLog)
-        console.log(
-          "navigator.languages not supported... Using default language " +
-            DEFAULT_LANG
-        );
-      return DEFAULT_LANG;
-    }
-
-    if (navigator.languages === null) {
-      if (this.enableLog)
-        console.log(
-          "navigator.languages is empty... Using default language " +
-            DEFAULT_LANG
-        );
-      return DEFAULT_LANG;
-    }
-
-    return navigator.languages[0];
-  },
   /**
    * Check that the source Google Sheets document contains a sheet named after SHEET_DATATYPE constant.
    *
@@ -132,10 +101,16 @@ SheetReader.prototype = {
    * @returns {object} the transformed data
    */
   processSheetData: function (tabletop) {
-    if (this.enableLog) console.log("Language", this.getBrowserFirstLang());
+    const browserLanguage = new BrowserLanguageParser(
+      this.enableLog
+    ).GetBrowserFirstLang();
+    if (this.enableLog) console.log("Language", browserLanguage);
     if (this.enableLog) console.log(tabletop);
     this.loadConfig(tabletop);
-    const dataTransformerInput = { config: this.config };
+    const dataTransformerInput = {
+      config: this.config,
+      enableLog: this.enableLog,
+    };
     this.checkSheetTypeExists(tabletop);
     var sheetDataType = new DataTransformer(
       dataTransformerInput

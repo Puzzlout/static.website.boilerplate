@@ -7,6 +7,10 @@ var DataTransformer = function (options) {
    * The Configuration
    */
   this.Config = options.config;
+  /**
+   * Flag to enable console logs
+   */
+  this.enableLog = options.enableLog | false;
 };
 
 /**
@@ -42,7 +46,7 @@ DataTransformer.prototype = {
   },
 
   TransformDataToArray: function (sheetData) {
-    self = this;
+    const dataTransformer = this;
     var labels = [];
     sheetData.elements.forEach(function (row) {
       labels.push({
@@ -50,15 +54,8 @@ DataTransformer.prototype = {
         value: row.Value,
         href: row.Href,
         order: row.Order,
-        isActive:
-          row.IsActive !== undefined && row.IsActive.toLowerCase() === "true"
-            ? true
-            : false,
-        openNewTab:
-          row.OpenNewTab !== undefined &&
-          row.OpenNewTab.toLowerCase() === "true"
-            ? true
-            : false,
+        isActive: dataTransformer.GetTruthyValueFromStr(row.IsActive),
+        openNewTab: dataTransformer.GetTruthyValueFromStr(row.OpenNewTab),
       });
     });
     return labels;
@@ -75,6 +72,18 @@ DataTransformer.prototype = {
   },
 
   GetValueI8n: function (fullRow) {
-    return fullRow.Value;
+    if (this.enableLog) console.log("Row", fullRow);
+    const value = new RowParser({
+      sheetCongig: this.Config,
+      rawRow: fullRow,
+      enableLog: this.enableLog,
+    }).ReadI8nValue();
+    return value;
+  },
+  GetTruthyValueFromStr: function (booleanStr) {
+    if (booleanStr === undefined) return false;
+    if (booleanStr.toLowerCase() !== "true") return false;
+
+    return true;
   },
 };
