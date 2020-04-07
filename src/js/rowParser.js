@@ -1,15 +1,17 @@
 var RowParser = function (options) {
-  if (options === undefined) throw new Error("options must contains sheetUrl");
+  if (options === undefined) throw new Error("options can't be empty");
   if (options.rawRow === undefined)
     console.error(new Error("options must contains a tabletop row value"));
-
+  if (Object.keys(options.rawRow).length > 0) {
+    console.error(
+      new Error("options must contains a tabletop row value with properties")
+    );
+  }
   /**
    * Flag to enable console logs
    */
   this.enableLog = options.enableLog | false;
-  this.Language = new BrowserLanguageParser(
-    this.enableLog
-  ).GetBrowserFirstLang();
+  this.Language = "en-US";
   this.RawRow = options.rawRow;
   /**
    * The Configuration
@@ -19,6 +21,11 @@ var RowParser = function (options) {
 };
 
 RowParser.prototype = {
+  RetrieveBrowserLang: function () {
+    this.Language = new BrowserLanguageParser(
+      this.enableLog
+    ).GetBrowserFirstLang();
+  },
   /**
    * Builds the column name of the value's row to read from the browser language
    * @returns {string}
@@ -133,3 +140,13 @@ RowParser.prototype = {
     document.body.appendChild(errorElement);
   },
 };
+if (typeof module !== "undefined" && module.exports) {
+  //don't just use inNodeJS, we may be in Browserify
+  module.exports = RowParser;
+} else if (typeof define === "function" && define.amd) {
+  define(function () {
+    return RowParser;
+  });
+} else {
+  window.RowParser = RowParser;
+}
