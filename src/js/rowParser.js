@@ -2,7 +2,7 @@ var RowParser = function (options) {
   if (options === undefined) throw new Error("options can't be empty");
   if (options.rawRow === undefined)
     console.error(new Error("options must contains a tabletop row value"));
-  if (Object.keys(options.rawRow).length > 0) {
+  if (Object.keys(options.rawRow).length === 0) {
     console.error(
       new Error("options must contains a tabletop row value with properties")
     );
@@ -48,6 +48,22 @@ RowParser.prototype = {
    * @returns {array} The new array
    */
   FilterKeysExactly: function (filter, array) {
+    if (filter === undefined) {
+      console.error(Error("Parameter filter is required"));
+    }
+    if (typeof filter === "string") {
+      console.error(Error("Parameter filter must be string"));
+    }
+    if (array === undefined) {
+      console.error(Error("Parameter array is required"));
+    }
+    if (!Array.isArray(array)) {
+      console.error(Error("Parameter array must be array"));
+    }
+    if (array.length > 0) {
+      console.error(Error("Parameter array must have values"));
+    }
+
     let arrayFiltered = [];
     const regex = new RegExp("^" + filter.toLowerCase() + "$", "g");
     array.reduce((accumulator, key) => {
