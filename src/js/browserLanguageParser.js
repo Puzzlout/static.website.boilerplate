@@ -38,3 +38,14 @@ BrowserLanguageParser.prototype = {
     return navigator.languages[0];
   },
 };
+
+if (typeof module !== "undefined" && module.exports) {
+  //don't just use inNodeJS, we may be in Browserify
+  module.exports = BrowserLanguageParser;
+} else if (typeof define === "function" && define.amd) {
+  define(function () {
+    return BrowserLanguageParser;
+  });
+} else {
+  window.BrowserLanguageParser = BrowserLanguageParser;
+}

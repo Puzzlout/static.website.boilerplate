@@ -93,3 +93,14 @@ SheetConfigReader.prototype = {
     });
   },
 };
+
+if (typeof module !== "undefined" && module.exports) {
+  //don't just use inNodeJS, we may be in Browserify
+  module.exports = SheetConfigReader;
+} else if (typeof define === "function" && define.amd) {
+  define(function () {
+    return SheetConfigReader;
+  });
+} else {
+  window.SheetConfigReader = SheetConfigReader;
+}

@@ -1,8 +1,81 @@
-var SheetValidator = function () {
-  //   if (options === undefined) throw new Error("options can't be empty");
+var SheetValidator = function (options) {
+  this.CheckI8n = true;
+
+  if (options === undefined) return;
+  if (options.checkI8n !== undefined) this.CheckI8n = options.checkI8n;
+
+  if (options.sheet === undefined) throw new Error("Sheet is absent");
+  if (options.sheet === {}) throw new Error("Sheet is empty");
+  if (Object.keys(options.sheet).length === 0)
+    throw new Error("Sheet has not properties");
+  if (options.sheet.columnNames === undefined)
+    throw new Error("Sheet column names is not set");
+
+  if (options.sheet.columnNames.length === 0)
+    throw new Error("Sheet has no columns");
+  /**
+   * The Configuration
+   */
+  this.ColumnNames = options.sheet.columnNames;
+  this.FallBackLanguage = "en-US";
+  this.Config = options.config | {};
+  this.DEFAULT_COLUMN_NAME = "Value";
 };
 
 SheetValidator.prototype = {
+  RetrieveBrowserLang: function () {
+    const firstLang = new BrowserLanguageParser(
+      this.enableLog
+    ).GetBrowserFirstLang();
+    return firstLang;
+  },
+  /**
+   * Builds the column name of the value's row to read from the browser language
+   * @returns {string}
+   */
+  BuildExpectedI8nColumnName: function () {
+    const lang = this.RetrieveBrowserLang();
+    return `${this.DEFAULT_COLUMN_NAME}_${lang}`;
+  },
+  /**
+   * Builds the default column name of the value's row
+   * @returns {string}
+   */
+  GetDefaultColumnValueName: function () {
+    return this.DEFAULT_COLUMN_NAME;
+  },
+  /**
+   * Finds the localized colunm name.
+   *
+   * @returns {string}  The column name found or False
+   */
+  GetI8nColumnExistsForUserLanguage: function () {
+    const I8nColumnName = this.BuildExpectedI8nColumnName();
+    return new SheetValidator().GetColumnName(this.ColumnNames, I8nColumnName);
+  },
+  GetValueColumnIdentity: function (sheet) {
+    if (this.CheckI8n) {
+      const i8nResult = this.GetI8nColumnExistsForUserLanguage();
+      if (i8nResult.isValid) return i8nResult.columnName;
+    }
+
+    if (this.enableLog) console.log("Falling back to default column...");
+    const defaultResult = this.GetColumnName(
+      this.ColumnNames,
+      this.DEFAULT_COLUMN_NAME,
+      true
+    );
+    if (defaultResult.isValid) return defaultResult.columnName;
+
+    const errorMsg = new Error(
+      "The sheet must at least contain a Value column"
+    );
+    console.error(new Error(errorMsg));
+    let errorElement = document.createElement("em");
+    errorElement.style = "color: red; font-weight:bold;";
+    errorElement.innerHTML = errorMsg;
+    document.body.appendChild(errorElement);
+  },
   /**
    * Search the column name matching the closest the input in a list.
    *
@@ -44,7 +117,7 @@ SheetValidator.prototype = {
     if (filter === undefined) {
       throw new Error("Parameter filter is required");
     }
-    if (typeof filter === "string") {
+    if (typeof filter !== "string") {
       throw new Error("Parameter filter must be string");
     }
     if (array === undefined) {
@@ -53,7 +126,7 @@ SheetValidator.prototype = {
     if (!Array.isArray(array)) {
       throw new Error("Parameter array must be array");
     }
-    if (array.length > 0) {
+    if (array.length === 0) {
       throw new Error("Parameter array must have values");
     }
 

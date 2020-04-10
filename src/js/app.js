@@ -5,7 +5,7 @@ var app = new Vue({
       "https://docs.google.com/spreadsheets/d/1pVp5uwv405TRNBnBXhZPJzstx614fV8KQ3TZvaLzNAc/pubhtml",
     data: {},
     loading: true,
-    enableLog: true,
+    enableLog: false,
     useGoogleForms: true,
     showTos: false,
     i18n: true,
@@ -18,15 +18,15 @@ var app = new Vue({
       this.showTos = false;
     },
     loadSheetData: function () {
-      var sheetReader = new SheetReader({
+      var gSheetReader = new GoogleSheetReader({
         sheetUrl: this.sheetUrl,
         enableLog: this.enableLog,
       });
-      var runPromise = sheetReader.getSpreadsheetData();
+      var runPromise = gSheetReader.GetData();
       selfVue = this;
       runPromise
         .then(function (tabletop) {
-          selfVue.data = sheetReader.processSheetData(tabletop);
+          selfVue.data = gSheetReader.TransformData(tabletop);
           if (selfVue.enableLog) console.log(selfVue.data);
 
           selfVue.loading = false;

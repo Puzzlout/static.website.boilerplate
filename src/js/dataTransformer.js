@@ -1,7 +1,7 @@
 var DataTransformer = function (options) {
-  if (options === undefined) throw new Error("options must contains sheetUrl");
+  if (options === undefined) throw new Error("options must be present");
   if (options.config === undefined)
-    console.error(new Error("options must contains a config object"));
+    throw new Error("options must contains a config object");
 
   /**
    * The Configuration
@@ -29,6 +29,10 @@ DataTransformer.prototype = {
   },
 
   TransformDataToNestedObject: function (sheetData) {
+    const valueColName = new SheetValidator({
+      checkI8n: true,
+      sheet: sheetData,
+    }).GetValueColumnIdentity(sheetData);
     const dataTransformer = this;
     var arrObjs = [];
     sheetData.elements.forEach(function (row) {
@@ -39,7 +43,7 @@ DataTransformer.prototype = {
         });
       }
       Object.defineProperty(arrObjs[sectionName], row.Key, {
-        value: dataTransformer.GetValueI8n(row),
+        value: dataTransformer.GetValueI8n(row, valueColName),
       });
     });
     return arrObjs;
@@ -71,13 +75,10 @@ DataTransformer.prototype = {
     return newObject;
   },
 
-  GetValueI8n: function (fullRow) {
-    if (this.enableLog) console.log("Row", fullRow);
-    const value = new RowParser({
-      sheetCongig: this.Config,
-      rawRow: fullRow,
-      enableLog: this.enableLog,
-    }).ReadI8nValue();
+  GetValueI8n: function (row, valueColName) {
+    if (this.enableLog) console.log("Value column is:", valueColName);
+    const value = row[valueColName];
+    if (this.enableLog) console.log("Value read:", value);
     return value;
   },
   GetTruthyValueFromStr: function (booleanStr) {
@@ -87,3 +88,13 @@ DataTransformer.prototype = {
     return true;
   },
 };
+if (typeof module !== "undefined" && module.exports) {
+  //don't just use inNodeJS, we may be in Browserify
+  module.exports = DataTransformer;
+} else if (typeof define === "function" && define.amd) {
+  define(function () {
+    return DataTransformer;
+  });
+} else {
+  window.DataTransformer = DataTransformer;
+}
