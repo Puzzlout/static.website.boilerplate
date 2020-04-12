@@ -1,7 +1,11 @@
 var DataTransformer = function (options) {
   if (options === undefined) throw new Error("options must be present");
   if (options.config === undefined)
-    throw new Error("options must contains a config object");
+    new SheetMessenger("options must contains a config object").ThrowError();
+  if (options.config.GoogleSheetsCmsVersion === undefined)
+    new SheetMessenger(
+      "options.config must contain at least the version (GoogleSheetsCmsVersion)"
+    ).ThrowError();
 
   /**
    * The Configuration
@@ -24,8 +28,12 @@ DataTransformer.prototype = {
     if (dataType === "nestedObject")
       return this.TransformDataToNestedObject(sheet);
 
-    console.warn("Type " + dataType + " is not implemented at the moment. ");
-    console.warn("Sheet '" + sheet.name + "' will be ignored.");
+    new SheetMessenger(
+      "Type " + dataType + " is not implemented at the moment. "
+    ).AddConsoleWarn();
+    new SheetMessenger(
+      "Sheet '" + sheet.name + "' will be ignored."
+    ).AddConsoleWarn();
   },
 
   TransformDataToNestedObject: function (sheetData) {
@@ -33,15 +41,19 @@ DataTransformer.prototype = {
       checkI8n: true,
       sheet: sheetData,
     }).GetValueColumnIdentity(sheetData);
+
     const dataTransformer = this;
     var arrObjs = [];
+
     sheetData.elements.forEach(function (row) {
       var sectionName = row.Section;
+
       if (!arrObjs[sectionName]) {
         Object.defineProperty(arrObjs, sectionName, {
           value: {},
         });
       }
+
       Object.defineProperty(arrObjs[sectionName], row.Key, {
         value: dataTransformer.GetValueI8n(row, valueColName),
       });
@@ -52,6 +64,7 @@ DataTransformer.prototype = {
   TransformDataToArray: function (sheetData) {
     const dataTransformer = this;
     var labels = [];
+
     sheetData.elements.forEach(function (row) {
       labels.push({
         key: row.Key,
@@ -67,11 +80,13 @@ DataTransformer.prototype = {
 
   TransformDataToObject: function (sheetData) {
     var newObject = {};
+
     sheetData.elements.forEach(function (row) {
       Object.defineProperty(newObject, row.Key, {
         value: row.Value,
       });
     });
+
     return newObject;
   },
 

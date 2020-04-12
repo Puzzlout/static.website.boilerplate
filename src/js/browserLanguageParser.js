@@ -28,10 +28,10 @@ BrowserLanguageParser.prototype = {
 
     if (navigator.languages === null) {
       if (this.enableLog)
-        console.warn(
+        new SheetMessenger(
           "navigator.languages is empty... Using default language " +
             this.DEFAULT_LANG
-        );
+        ).AddConsoleWarn();
       return this.DEFAULT_LANG;
     }
 

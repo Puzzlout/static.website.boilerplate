@@ -1,9 +1,10 @@
 var SheetConfigReader = function (options) {
-  if (options === undefined) throw new Error("options must contains sheetUrl");
+  if (options === undefined)
+    new SheetMessenger("options must contains sheetUrl").ThrowError();
   if (options.sourceData === undefined)
-    console.error(
-      new Error("options must contains raw data of the configuration sheet")
-    );
+    new SheetMessenger(
+      "options must contains raw data of the configuration sheet"
+    ).ThrowError();
 
   /**
    * The source data
@@ -29,36 +30,59 @@ SheetConfigReader.prototype = {
     return elements.length > 0;
   },
   /**
-   * Check the format of value of the variable configured.
-   * It must be VariableName::VariableValue
-   *
-   * @param {string} variableStr The string value of the variable configured
+   * Check the column name
+   * @param {string} columnName The string value of the column to ckeck
+   * @param {bool} isKey indicate if the string to check is the key or the value.
    */
-  ChecksVariableFormat: function (variableStr) {
-    if (variableStr.indexOf("::") === -1) {
-      console.error(
-        new Error(
-          "The variable must be formatted 'VariableName::VariableValue'"
-        )
-      );
+  CheckColumnFormat: function (columnName, isKey) {
+    const inputSource = `${isKey ? "Key" : "Value"}`;
+    const undefinedMessage = `The ${inputSource} colum must be named. It is undefined.`;
+    const emptyMessage = `The ${inputSource} colum must be named. It is empty.`;
+    const badNameMessage = `The colum isn't named ${inputSource}. It equals to "${columnName}".`;
+    if (columnName === undefined) {
+      new SheetMessenger(undefinedMessage).ThrowError();
+    }
+    if (columnName.trim() === "") {
+      new SheetMessenger(emptyMessage).ThrowError();
+    }
+    if (isKey) {
+      if (columnName.trim() !== "Key")
+        new SheetMessenger(badNameMessage).ThrowError();
+      return;
+    }
+    if (!isKey) {
+      if (columnName.trim() !== "Value")
+        new SheetMessenger(badNameMessage).ThrowError();
+      return;
     }
   },
   /**
    * Checks the array is made of 2 elements and neither is empty
-   * @param {array} variableArray The variable name and value in an array
+   * @param {string} stringToCheck The variable name and value in an array
+   * @param {int} rowNumber The row in the sheet
+   * @param {bool} isKey indicate if the string to check is the key or the value.
    */
-  ChecksVariableArray: function (variableArray) {
-    if (variableArray.length !== 2) {
-      console.error(new Error("Is the variable missing its value or name?"));
+  CheckVariable: function (stringToCheck, rowNumber, isKey = true) {
+    switch (isKey) {
+      case true:
+        if (stringToCheck.trim() === "") {
+          new SheetMessenger(
+            `The key in row ${rowNumber} is missing. The configuration variable will be ignored.`
+          ).AddConsoleWarn();
+          return false;
+        }
+        break;
+
+      default:
+        if (stringToCheck.trim() === "") {
+          new SheetMessenger(
+            `The value in row ${rowNumber} is missing. It will be ignored.`
+          ).AddConsoleWarn();
+          return false;
+        }
+        break;
     }
-    const VariableName = variableArray[0];
-    if (VariableName === "") {
-      console.error(new Error("The variable name is missing."));
-    }
-    const VariableValue = variableArray[1];
-    if (VariableValue === "") {
-      console.error(new Error("The variable value is missing."));
-    }
+    return true;
   },
   /**
    * Parse the data into an object.
@@ -66,30 +90,45 @@ SheetConfigReader.prototype = {
    */
   GetConfig: function () {
     if (this.enableLog) console.log(this.SourceData);
-    const VariableCol = this.SourceData.columnNames[0];
-    const DocsCol = this.SourceData.columnNames[1];
+    const KeyCol = this.SourceData.columnNames[0];
+    this.CheckColumnFormat(KeyCol, true);
+    const ValueCol = this.SourceData.columnNames[1];
+    this.CheckColumnFormat(ValueCol, false);
     if (!this.SomeVariablesExist(this.SourceData.elements)) return {};
 
     let config = {};
+    let rowNumber = 2;
     this.SourceData.elements.forEach((variableRaw) => {
-      this.ParseVariable(config, variableRaw, VariableCol);
+      this.ParseVariable(config, variableRaw, KeyCol, ValueCol, rowNumber);
+      rowNumber += 1;
     });
-    if (this.enableLog) console.log("Config", config);
+    new SheetMessenger("Config", config).AddConsoleLog(this.enableLog);
     return config;
   },
   /**
    * Parse the variable into the config object.
    * @param {object} config The config object filled from the parsed data.
    * @param {object} variableRaw A tabletop row element.
-   * @param {string} VariableCol The name of column to read the variable from.
+   * @param {string} KeyCol The name of column to read the name of the variable from.
+   * @param {string} ValueCol The name of column to read the value of the variable from.
+   * @param {int} currentRowNum The number of the row being read. It is start at 2 as the row 1 is the headers
    */
-  ParseVariable: function (config, variableRaw, VariableCol) {
-    let variableStr = variableRaw[VariableCol];
-    this.ChecksVariableFormat(variableStr);
-    const variableArray = variableStr.split("::");
-    this.ChecksVariableArray(variableArray);
-    Object.defineProperty(config, variableArray[0], {
-      value: variableArray[1],
+  ParseVariable: function (
+    config,
+    variableRaw,
+    keyCol,
+    valueCol,
+    currentRowNum
+  ) {
+    let keyStr = variableRaw[keyCol];
+    const keyIsOk = this.CheckVariable(keyStr, currentRowNum, true);
+
+    let valueStr = variableRaw[valueCol];
+    const valueIsOk = this.CheckVariable(valueStr, currentRowNum, false);
+
+    if (!keyIsOk || !valueIsOk) return;
+    Object.defineProperty(config, keyStr, {
+      value: valueStr,
     });
   },
 };

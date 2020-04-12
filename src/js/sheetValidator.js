@@ -7,12 +7,12 @@ var SheetValidator = function (options) {
   if (options.sheet === undefined) throw new Error("Sheet is absent");
   if (options.sheet === {}) throw new Error("Sheet is empty");
   if (Object.keys(options.sheet).length === 0)
-    throw new Error("Sheet has not properties");
+    new SheetMessenger("Sheet has not properties").ThrowError();
   if (options.sheet.columnNames === undefined)
-    throw new Error("Sheet column names is not set");
+    new SheetMessenger("Sheet column names is not set").ThrowError();
 
   if (options.sheet.columnNames.length === 0)
-    throw new Error("Sheet has no columns");
+    new SheetMessenger("Sheet has no columns").ThrowError();
   /**
    * The Configuration
    */
@@ -59,7 +59,9 @@ SheetValidator.prototype = {
       if (i8nResult.isValid) return i8nResult.columnName;
     }
 
-    if (this.enableLog) console.log("Falling back to default column...");
+    new SheetMessenger("Falling back to default column...").AddConsoleLog(
+      this.enableLog
+    );
     const defaultResult = this.GetColumnName(
       this.ColumnNames,
       this.DEFAULT_COLUMN_NAME,
@@ -68,13 +70,9 @@ SheetValidator.prototype = {
     if (defaultResult.isValid) return defaultResult.columnName;
 
     const errorMsg = new Error(
-      "The sheet must at least contain a Value column"
+      `The sheet "${sheet.name}" must at least contain a Value column`
     );
-    console.error(new Error(errorMsg));
-    let errorElement = document.createElement("em");
-    errorElement.style = "color: red; font-weight:bold;";
-    errorElement.innerHTML = errorMsg;
-    document.body.appendChild(errorElement);
+    new SheetMessenger(errorMsg).SetError();
   },
   /**
    * Search the column name matching the closest the input in a list.
@@ -98,10 +96,10 @@ SheetValidator.prototype = {
     let columnExists = rowKeysFiltered.length > 0;
 
     if (!columnExists) {
-      if (this.enableLog)
-        console.log(
-          `The sheet doesn't contain any column matching the column '${columnName}'`
-        );
+      new SheetMessenger(
+        `The sheet doesn't contain any column matching the column '${columnName}'`
+      ).AddConsoleLog(this.enableLog);
+
       return { isValid: false };
     }
     return { isValid: true, columnName: rowKeysFiltered[0] };
@@ -115,19 +113,19 @@ SheetValidator.prototype = {
    */
   FilterKeysExactly: function (filter, array) {
     if (filter === undefined) {
-      throw new Error("Parameter filter is required");
+      new SheetMessenger("Parameter filter is required").ThrowError();
     }
     if (typeof filter !== "string") {
-      throw new Error("Parameter filter must be string");
+      new SheetMessenger("Parameter filter must be string").ThrowError();
     }
     if (array === undefined) {
-      throw new Error("Parameter array is required");
+      new SheetMessenger("Parameter array is required").ThrowError();
     }
     if (!Array.isArray(array)) {
-      throw new Error("Parameter array must be array");
+      new SheetMessenger("Parameter array must be array").ThrowError();
     }
     if (array.length === 0) {
-      throw new Error("Parameter array must have values");
+      new SheetMessenger("Parameter array must have values").ThrowError();
     }
 
     let arrayFiltered = [];
