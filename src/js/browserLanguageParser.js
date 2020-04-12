@@ -1,8 +1,9 @@
-var BrowserLanguageParser = function (enableLog) {
+var BrowserLanguageParser = function (options) {
+  if (options === undefined) throw new Error("options cannot be empty");
   /**
    * Flag to enable console logs
    */
-  this.enableLog = enableLog | false;
+  this.enableLog = options.enableLog | false;
   /**
    * The default language
    */
@@ -28,7 +29,7 @@ BrowserLanguageParser.prototype = {
 
     if (navigator.languages === null) {
       if (this.enableLog)
-        new SheetMessenger(
+        this.messenger(
           "navigator.languages is empty... Using default language " +
             this.DEFAULT_LANG
         ).AddConsoleWarn();

@@ -1,10 +1,9 @@
 var SheetConfigReader = function (options) {
-  if (options === undefined)
-    new SheetMessenger("options must contains sheetUrl").ThrowError();
+  if (options === undefined) throw new Error("options must contains sheetUrl");
   if (options.sourceData === undefined)
-    new SheetMessenger(
+    throw new Error(
       "options must contains raw data of the configuration sheet"
-    ).ThrowError();
+    );
 
   /**
    * The source data
@@ -40,19 +39,17 @@ SheetConfigReader.prototype = {
     const emptyMessage = `The ${inputSource} colum must be named. It is empty.`;
     const badNameMessage = `The colum isn't named ${inputSource}. It equals to "${columnName}".`;
     if (columnName === undefined) {
-      new SheetMessenger(undefinedMessage).ThrowError();
+      throw new Error(undefinedMessage);
     }
     if (columnName.trim() === "") {
-      new SheetMessenger(emptyMessage).ThrowError();
+      throw new Error(emptyMessage);
     }
     if (isKey) {
-      if (columnName.trim() !== "Key")
-        new SheetMessenger(badNameMessage).ThrowError();
+      if (columnName.trim() !== "Key") throw new Error(badNameMessage);
       return;
     }
     if (!isKey) {
-      if (columnName.trim() !== "Value")
-        new SheetMessenger(badNameMessage).ThrowError();
+      if (columnName.trim() !== "Value") throw new Error(badNameMessage);
       return;
     }
   },
@@ -66,18 +63,18 @@ SheetConfigReader.prototype = {
     switch (isKey) {
       case true:
         if (stringToCheck.trim() === "") {
-          new SheetMessenger(
+          console.warn(
             `The key in row ${rowNumber} is missing. The configuration variable will be ignored.`
-          ).AddConsoleWarn();
+          );
           return false;
         }
         break;
 
       default:
         if (stringToCheck.trim() === "") {
-          new SheetMessenger(
+          console.warn(
             `The value in row ${rowNumber} is missing. It will be ignored.`
-          ).AddConsoleWarn();
+          );
           return false;
         }
         break;
@@ -102,7 +99,7 @@ SheetConfigReader.prototype = {
       this.ParseVariable(config, variableRaw, KeyCol, ValueCol, rowNumber);
       rowNumber += 1;
     });
-    new SheetMessenger("Config", config).AddConsoleLog(this.enableLog);
+    if (this.enableLog) console.log("Config", config);
     return config;
   },
   /**

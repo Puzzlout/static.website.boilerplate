@@ -115,9 +115,7 @@ GoogleSheetReader.prototype = {
         viewModel
       );
     });
-    new SheetMessenger("Formatted data", viewModel).AddConsoleLog(
-      this.enableLog
-    );
+    if (this.enableLog) console.log("Formatted data", viewModel);
     return viewModel;
   },
   /**

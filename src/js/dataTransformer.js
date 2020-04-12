@@ -1,11 +1,11 @@
 var DataTransformer = function (options) {
   if (options === undefined) throw new Error("options must be present");
   if (options.config === undefined)
-    new SheetMessenger("options must contains a config object").ThrowError();
+    throw new Error("options must contains a config object");
   if (options.config.GoogleSheetsCmsVersion === undefined)
-    new SheetMessenger(
+    throw new Error(
       "options.config must contain at least the version (GoogleSheetsCmsVersion)"
-    ).ThrowError();
+    );
 
   /**
    * The Configuration
@@ -28,12 +28,8 @@ DataTransformer.prototype = {
     if (dataType === "nestedObject")
       return this.TransformDataToNestedObject(sheet);
 
-    new SheetMessenger(
-      "Type " + dataType + " is not implemented at the moment. "
-    ).AddConsoleWarn();
-    new SheetMessenger(
-      "Sheet '" + sheet.name + "' will be ignored."
-    ).AddConsoleWarn();
+    console.warn("Type " + dataType + " is not implemented at the moment. ");
+    console.warn("Sheet '" + sheet.name + "' will be ignored.");
   },
 
   TransformDataToNestedObject: function (sheetData) {
