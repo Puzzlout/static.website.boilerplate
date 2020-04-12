@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/Puzzlout/static.website.boilerplate#readme",
   "devDependencies": {
-    "autoprefixer": "^9.7.5",
+    "autoprefixer": "^9.7.6",
     "browser-sync": "^2.26.7",
     "chai": "^4.2.0",
     "cssnano": "^4.1.10",
@@ -47,10 +47,12 @@
     "gulp-sass": "^4.0.2",
     "gulp-svgmin": "^2.2.0",
     "gulp-terser": "^1.2.0",
+    "jsdom": "^16.2.2",
     "jshint": "^2.11.0",
     "jshint-stylish": "^2.2.1",
     "lazypipe": "^1.0.2",
     "mocha": "^7.1.1",
+    "mocha-jsdom": "^2.0.0",
     "standard-version": "^7.1.0",
     "vue": "^2.6.11"
   },
