@@ -14,7 +14,7 @@ var settings = {
   reload: true,
   useFontAwesome: true,
   useVue: true,
-  useGsheets2Json: true
+  useGsheets2Json: true,
 };
 
 /**
@@ -27,43 +27,43 @@ var paths = {
   scripts: {
     input: ["src/js/*"],
     polyfills: ".polyfill.js",
-    output: "dist/js/"
+    output: "dist/js/",
   },
   styles: {
     input: "src/sass/**/*.{scss,sass}",
     output: "dist/css/",
-    concat: "app.min.css"
+    concat: "app.min.css",
   },
   svgs: {
     input: "src/svg/*.svg",
-    output: "dist/svg/"
+    output: "dist/svg/",
   },
   images: {
     input: ["src/copy/img/*.jpg"],
-    output: "dist/img/"
+    output: "dist/img/",
   },
   copy: {
     input: "src/copy/**/*",
-    output: "dist/"
+    output: "dist/",
   },
   fastyles: {
     input: "node_modules/@fortawesome/fontawesome-pro/css/**/*.min.css",
-    output: "dist/css/fontawesome/"
+    output: "dist/css/fontawesome/",
   },
   fawebfonts: {
     input:
       "node_modules/@fortawesome/fontawesome-pro/webfonts/**/*.{woff,woff2}",
-    output: "dist/css/webfonts/"
+    output: "dist/css/webfonts/",
   },
   vue: {
     input: "node_modules/vue/dist/vue.min.js",
-    output: "dist/js/"
+    output: "dist/js/",
   },
   gsheets2json: {
     input: "node_modules/gsheets2json/dist/gsheet2json.min.js",
-    output: "dist/js/"
+    output: "dist/js/",
   },
-  reload: "./dist/"
+  reload: "./dist/",
 };
 
 /**
@@ -79,7 +79,7 @@ var banner = {
     " <%= package.author.name %>" +
     " | <%= package.license %> License" +
     " | <%= package.repository.url %>" +
-    " */\n"
+    " */\n",
 };
 
 /**
@@ -120,7 +120,7 @@ var browserSync = require("browser-sync"); //ok
  */
 
 // Remove pre-existing content from output folders
-var cleanDist = function(done) {
+var cleanDist = function (done) {
   // Make sure this feature is activated before running
   if (!settings.clean) return done();
 
@@ -143,13 +143,13 @@ var jsTasks = lazypipe()
   .pipe(dest, paths.scripts.output);
 
 // Lint, minify, and concatenate scripts
-var buildScripts = function(done) {
+var buildScripts = function (done) {
   // Make sure this feature is activated before running
   if (!settings.scripts) return done();
 
   // Run tasks on script files
   return src(paths.scripts.input).pipe(
-    flatmap(function(stream, file) {
+    flatmap(function (stream, file) {
       // If the file is a directory
       if (file.isDirectory()) {
         // Setup a suffix variable
@@ -163,7 +163,7 @@ var buildScripts = function(done) {
           // Grab files that aren't polyfills, concatenate them, and process them
           src([
             file.path + "/*.js",
-            "!" + file.path + "/*" + paths.scripts.polyfills
+            "!" + file.path + "/*" + paths.scripts.polyfills,
           ])
             .pipe(concat(file.relative + ".js"))
             .pipe(jsTasks());
@@ -185,7 +185,7 @@ var buildScripts = function(done) {
 };
 
 // Lint scripts
-var lintScripts = function(done) {
+var lintScripts = function (done) {
   // Make sure this feature is activated before running
   if (!settings.scripts) return done();
 
@@ -196,19 +196,19 @@ var lintScripts = function(done) {
 };
 
 //copy vue library if needed
-var copyVue = function(done) {
+var copyVue = function (done) {
   if (!settings.useVue) return done();
 
   return src(paths.vue.input).pipe(dest(paths.vue.output));
 };
 //copy gsheets2json library if needed
-var copyGsheets2Json = function(done) {
+var copyGsheets2Json = function (done) {
   if (!settings.useGsheets2Json) return done();
 
   return src(paths.gsheets2json.input).pipe(dest(paths.gsheets2json.output));
 };
 // Process, lint, and minify Sass files
-var buildStyles = function(done) {
+var buildStyles = function (done) {
   // Make sure this feature is activated before running
   if (!settings.styles) return done();
 
@@ -217,15 +217,15 @@ var buildStyles = function(done) {
     .pipe(
       sass({
         outputStyle: "expanded",
-        sourceComments: true
+        sourceComments: true,
       })
     )
     .pipe(
       postcss([
         prefix({
           cascade: true,
-          remove: true
-        })
+          remove: true,
+        }),
       ])
     )
     .pipe(header(banner.main, { package: package }))
@@ -235,9 +235,9 @@ var buildStyles = function(done) {
       postcss([
         minify({
           discardComments: {
-            removeAll: true
-          }
-        })
+            removeAll: true,
+          },
+        }),
       ])
     )
     .pipe(concat(paths.styles.concat))
@@ -245,7 +245,7 @@ var buildStyles = function(done) {
 };
 
 // Process Font Awesome files
-var copyFontAwesome = function(done) {
+var copyFontAwesome = function (done) {
   // Make sure this feature is activated before running
   if (!settings.useFontAwesome) return done();
 
@@ -258,18 +258,16 @@ var copyFontAwesome = function(done) {
 };
 
 // Optimize SVG files
-var buildSVGs = function(done) {
+var buildSVGs = function (done) {
   // Make sure this feature is activated before running
   if (!settings.svgs) return done();
 
   // Optimize SVG files
-  return src(paths.svgs.input)
-    .pipe(svgmin())
-    .pipe(dest(paths.svgs.output));
+  return src(paths.svgs.input).pipe(svgmin()).pipe(dest(paths.svgs.output));
 };
 
 // Copy static files into output folder
-var copyFiles = function(done) {
+var copyFiles = function (done) {
   // Make sure this feature is activated before running
   if (!settings.copy) return done();
 
@@ -278,7 +276,7 @@ var copyFiles = function(done) {
 };
 
 // Generate responsive images
-var processImages = function(done) {
+var processImages = function (done) {
   // Make sure this feature is activated before running
   if (!settings.images) return done();
 
@@ -295,16 +293,16 @@ var processImages = function(done) {
             { width: 1900, rename: { suffix: "-1900w" } },
             {
               // Compress, strip metadata, and rename original image //used for the index.html across all viewports // //used for the index.html across all viewports
-              rename: { suffix: "-800w" }
-            }
-          ]
+              rename: { suffix: "-800w" },
+            },
+          ],
         },
         {
           // Global configuration for all images
           // The output quality for JPEG, WebP and TIFF output formats
           quality: 70,
           progressive: true,
-          withMetadata: false
+          withMetadata: false,
         }
       ) // Use progressive (interlace) scan for JPEG and PNG output // Strip all metadata
     )
@@ -312,15 +310,15 @@ var processImages = function(done) {
 };
 
 // Watch for changes to the src directory
-var startServer = function(done) {
+var startServer = function (done) {
   // Make sure this feature is activated before running
   if (!settings.reload) return done();
 
   // Initialize BrowserSync
   browserSync.init({
     server: {
-      baseDir: paths.reload
-    }
+      baseDir: paths.reload,
+    },
   });
 
   // Signal completion
@@ -328,14 +326,14 @@ var startServer = function(done) {
 };
 
 // Reload the browser when files change
-var reloadBrowser = function(done) {
+var reloadBrowser = function (done) {
   if (!settings.reload) return done();
   browserSync.reload();
   done();
 };
 
 // Watch for changes
-var watchSource = function(done) {
+var watchSource = function (done) {
   watch(paths.input, series(exports.default, reloadBrowser));
   done();
 };
@@ -364,6 +362,8 @@ exports.default = series(
 // Watch and reload
 // gulp watch
 exports.watch = series(exports.default, startServer, watchSource);
+//Watch while unit testing
+exports.test = series(exports.default, watchSource);
 
 exports.images = series(cleanDist, processImages);
 exports.clean = cleanDist;
