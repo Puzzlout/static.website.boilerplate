@@ -36,6 +36,7 @@ DataTransformer.prototype = {
     const valueColName = new SheetValidator({
       checkI8n: true,
       sheet: sheetData,
+      config: this.Config,
     }).GetValueColumnIdentity(sheetData);
 
     const dataTransformer = this;

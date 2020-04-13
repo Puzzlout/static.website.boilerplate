@@ -6,10 +6,6 @@ var BrowserLanguageParser = function (options) {
   if (options !== undefined) {
     this.enableLog = options.enableLog | false;
   }
-  /**
-   * The default language
-   */
-  this.DEFAULT_LANG = "en";
 };
 
 BrowserLanguageParser.prototype = {
@@ -19,12 +15,9 @@ BrowserLanguageParser.prototype = {
    */
   ReturnDefaultIfNavigatorLangsUnsupported: function () {
     if (this.enableLog) {
-      console.log(
-        "navigator.languages not supported... Using default language " +
-          this.DEFAULT_LANG
-      );
+      console.log("navigator.languages not supported...");
     }
-    return this.DEFAULT_LANG;
+    return undefined;
   },
   /**
    * Returns the default language since navigator.languages is undefined or null.
@@ -32,12 +25,9 @@ BrowserLanguageParser.prototype = {
    */
   ReturnDefaultIfNavigatorLangsUndefinedOrNull: function () {
     if (this.enableLog) {
-      console.log(
-        "navigator.languages is undefined or null... Using default language " +
-          this.DEFAULT_LANG
-      );
+      console.log("navigator.languages is undefined or null...");
     }
-    return this.DEFAULT_LANG;
+    return undefined;
   },
   /**
    * Returns the default language since navigator.languages is empty.
@@ -45,12 +35,9 @@ BrowserLanguageParser.prototype = {
    */
   ReturnDefaultIfNavigatorLangsEmpty: function () {
     if (this.enableLog) {
-      console.log(
-        "navigator.languages is empty... Using default language " +
-          this.DEFAULT_LANG
-      );
+      console.log("navigator.languages is empty...");
     }
-    return this.DEFAULT_LANG;
+    return undefined;
   },
   /**
    * Read first language from navigator.languages when available

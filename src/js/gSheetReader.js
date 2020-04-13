@@ -108,6 +108,7 @@ GoogleSheetReader.prototype = {
     //so create a copy of this (Vue instance) to use into the forEach.
     const gSheetReaderInstance = this;
     let viewModel = {};
+    this.LoadConfig(tabletop);
     tabletop.modelNames.forEach(function (sheetName) {
       gSheetReaderInstance.TransformCurrentSheetData(
         tabletop,
@@ -125,7 +126,6 @@ GoogleSheetReader.prototype = {
    * @param {object} viewModel The output data to return the application
    */
   TransformCurrentSheetData: function (tabletop, sheetName, viewModel) {
-    this.LoadConfig(tabletop);
     const dataTransformerInput = {
       config: this.config,
       enableLog: this.enableLog,

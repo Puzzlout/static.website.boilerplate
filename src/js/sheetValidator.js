@@ -14,15 +14,24 @@ var SheetValidator = function (options) {
   if (options.sheet.columnNames.length === 0)
     throw new Error("Sheet has no columns");
   /**
-   * The Configuration
+   * The sheet columns
    */
   this.ColumnNames = options.sheet.columnNames;
-  this.FallBackLanguage = "en-US";
-  this.Config = options.config | {};
+  /**
+   * The Configuration
+   */
+  this.Config = options.config;
+  /**
+   * The default Value column name
+   */
   this.DEFAULT_COLUMN_NAME = "Value";
 };
 
 SheetValidator.prototype = {
+  /**
+   * Retrieve the first browser language
+   * @returns {string} The language
+   */
   RetrieveBrowserLang: function () {
     const firstLang = new BrowserLanguageParser({
       enableLog: this.enableLog,
@@ -30,11 +39,35 @@ SheetValidator.prototype = {
     return firstLang;
   },
   /**
+   * Decides which language that the app will used to retrieve the resource label.
+   * If the Google Sheet configuration has one set, it is used.
+   * Otherwise, the browser language is used.
+   * @returns {string} The language
+   */
+  GetUsedLanguage: function () {
+    const browserLang = this.RetrieveBrowserLang();
+    const configLang = this.Config.DefaultLanguage;
+
+    const bothConfigAndBrowserLangUndefined =
+      configLang === undefined && browserLang === undefined;
+
+    if (bothConfigAndBrowserLangUndefined && this.enableLog) {
+      console.warn("No language found in the Google Sheet or the Browser.");
+    }
+
+    //If browser lang is read, return it
+    if (browserLang !== undefined) return browserLang;
+    //If config lang is read, return it
+    if (configLang !== undefined) return configLang;
+    //Otherwise, return undefined it will parse the column Value in the sheet.
+    return undefined;
+  },
+  /**
    * Builds the column name of the value's row to read from the browser language
    * @returns {string}
    */
   BuildExpectedI8nColumnName: function () {
-    const lang = this.RetrieveBrowserLang();
+    const lang = this.GetUsedLanguage();
     return `${this.DEFAULT_COLUMN_NAME}_${lang}`;
   },
   /**
