@@ -20,6 +20,14 @@ hr {
 @media (min-width: 800px) {
 
     #app>* {
+        grid-column: 3 / -3;
+    }
+
+}
+
+@media (min-width: 1200px) {
+
+    #app>* {
         grid-column: 4 / -4;
     }
 
