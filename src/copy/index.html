@@ -77,16 +77,16 @@
 </head>
 
 <body class="text-center center-body font-Montserrat">
-    <div id="app">
+    <div id="app" class="main-grid">
         <div v-if="loading" class="loading-screen">
-            <p>Loading...</p>
+            <p><img class="loader-icon" src="svg/three-dots.svg" title="Loading" /></p>
         </div>
         <div v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
             <header></header>
-            <main class="main-grid">
+            <main class="">
                 <h1>{{ data.Sections.main.h1Title }}</h1>
             </main>
-            <footer class="main-grid">
+            <footer class="">
                 <p>{{ data.Sections.footer.pAuthor }}</p>
                 <a class="fine-print" :href="data.Sections.footer.aRepoLinkHref" rel="noopener" target="_blank">
                     <i class="fab fa-github"></i>
