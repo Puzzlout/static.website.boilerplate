@@ -59,8 +59,16 @@ SheetValidator.prototype = {
     if (browserLang !== undefined) return browserLang;
     //If config lang is read, return it
     if (configLang !== undefined) return configLang;
-    //Otherwise, return undefined it will parse the column Value in the sheet.
+    //Otherwise, return undefined.
     return undefined;
+  },
+  /**
+   * Set the attribut lang in the HTML tag.
+   * @param {string} language The language value
+   */
+  SetDocumentLang: function (language) {
+    const docLang = document.querySelector("html");
+    docLang.lang = language;
   },
   /**
    * Builds the column name of the value's row to read from the browser language

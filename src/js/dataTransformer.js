@@ -6,6 +6,10 @@ var DataTransformer = function (options) {
     throw new Error(
       "options.config must contain at least the version (GoogleSheetsCmsVersion)"
     );
+  if (options.config.DefaultLanguage === undefined)
+    throw new Error(
+      "options.config must contain the default language (DefaultLanguage)"
+    );
 
   /**
    * The Configuration

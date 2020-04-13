@@ -37,11 +37,7 @@ var app = new Vue({
     },
   },
   created: function () {
-    if (this.enableLog) console.log("Languages", navigator.languages);
     this.loadSheetData();
-    if (!this.data) throw new Error("No data");
-
-    const docLang = document.querySelector("html");
-    docLang.lang = new BrowserLanguageParser().GetBrowserFirstLang();
+    if (!this.data) throw new Error("No data loaded");
   },
 });
