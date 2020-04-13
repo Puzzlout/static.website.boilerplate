@@ -1,39 +1,60 @@
 var BrowserLanguageParser = function (options) {
-  if (options === undefined) throw new Error("options cannot be empty");
   /**
    * Flag to enable console logs
    */
-  this.enableLog = options.enableLog | false;
-  /**
-   * The default language
-   */
-  this.DEFAULT_LANG = "en";
+  this.enableLog = false;
+  if (options !== undefined) {
+    this.enableLog = options.enableLog | false;
+  }
 };
 
 BrowserLanguageParser.prototype = {
   /**
+   * Returns the default language since navigator.languages isn't supported.
+   * @returns {string} The default language
+   */
+  ReturnDefaultIfNavigatorLangsUnsupported: function () {
+    if (this.enableLog) {
+      console.log("navigator.languages not supported...");
+    }
+    return undefined;
+  },
+  /**
+   * Returns the default language since navigator.languages is undefined or null.
+   * @returns {string} The default language
+   */
+  ReturnDefaultIfNavigatorLangsUndefinedOrNull: function () {
+    if (this.enableLog) {
+      console.log("navigator.languages is undefined or null...");
+    }
+    return undefined;
+  },
+  /**
+   * Returns the default language since navigator.languages is empty.
+   * @returns {string} The default language
+   */
+  ReturnDefaultIfNavigatorLangsEmpty: function () {
+    if (this.enableLog) {
+      console.log("navigator.languages is empty...");
+    }
+    return undefined;
+  },
+  /**
    * Read first language from navigator.languages when available
    * to load the site in the prefered user language.
-   *
    * @returns {string} navigator.languages[0] | DEFAULT_LANG
    */
   GetBrowserFirstLang: function () {
     if (!navigator.languages) {
-      if (this.enableLog)
-        console.log(
-          "navigator.languages not supported... Using default language " +
-            this.DEFAULT_LANG
-        );
-      return this.DEFAULT_LANG;
+      return this.ReturnDefaultIfNavigatorLangsUnsupported();
     }
 
-    if (navigator.languages === null) {
-      if (this.enableLog)
-        this.messenger(
-          "navigator.languages is empty... Using default language " +
-            this.DEFAULT_LANG
-        ).AddConsoleWarn();
-      return this.DEFAULT_LANG;
+    if (navigator.languages === undefined || navigator.languages === null) {
+      return this.ReturnDefaultIfNavigatorLangsUndefinedOrNull();
+    }
+
+    if (navigator.languages.length === 0) {
+      return this.ReturnDefaultIfNavigatorLangsEmpty();
     }
 
     return navigator.languages[0];

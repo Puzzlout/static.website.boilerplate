@@ -2,26 +2,25 @@ body {
     background-image: url(../img/bg-1900w.jpg);
 }
 
-main,
-footer {
-    background-color: #ffffff75;
-}
 
 hr {
     width: 10vw;
     margin-top: 2em;
 }
 
-main>*,
-footer>* {
+#app>* {
     grid-column: 2 / -2;
+}
+
+.loader-icon {
+    width: 4rem;
+    margin: 0 auto;
 }
 
 @media (min-width: 800px) {
 
-    main>*,
-    footer>* {
-        grid-column: 3 / -3;
+    #app>* {
+        grid-column: 4 / -4;
     }
 
 }
