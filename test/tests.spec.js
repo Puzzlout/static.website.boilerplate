@@ -1,6 +1,6 @@
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
-const mochaDome = require("mocha-jsdom");
+const mochaDom = require("mocha-jsdom");
 const chai = require("chai");
 const should = chai.should();
 const expect = chai.expect;
@@ -25,8 +25,8 @@ function makeTrueOptions() {
   };
 }
 
-const DataTransformer = require("../dist/js/dataTransformer");
-const DataTransformerMin = require("../dist/js/dataTransformer.min");
+const DataTransformer = require("../dist/js/sheetValidator");
+const DataTransformerMin = require("../dist/js/sheetValidator.min");
 
 function testDataTransformer(TheClass) {
   describe("constructor", () => {
@@ -101,7 +101,7 @@ function testDataTransformer(TheClass) {
       done();
     });
     it("BuildExpectedI8nColumnName", (done) => {
-      let fakeOptions = makeFakeOptions();
+      let fakeOptions = makeTrueOptions();
       fakeOptions.enableLog = true;
       var instance = new TheClass(fakeOptions);
       const value = instance.BuildExpectedI8nColumnName();
