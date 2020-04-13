@@ -24,8 +24,9 @@ var settings = {
 var paths = {
   input: "src/",
   output: "dist/",
+  bundle: "app",
   scripts: {
-    input: ["src/js/*"],
+    input: ["src/js/"],
     polyfills: ".polyfill.js",
     output: "dist/js/",
   },
@@ -102,6 +103,8 @@ var stylish = require("jshint-stylish");
 var concat = require("gulp-concat-2020");
 var uglify = require("gulp-terser");
 var optimizejs = require("gulp-optimize-js");
+var useref = require("gulp-useref");
+var gulpif = require("gulp-if");
 
 // Styles
 var sass = require("gulp-sass");
@@ -160,17 +163,24 @@ var buildScripts = function (done) {
           // Update the suffix
           suffix = ".polyfills";
 
-          // Grab files that aren't polyfills, concatenate them, and process them
+          console.log(
+            "Grab files that aren't polyfills, concatenate them, and process them"
+          );
           src([
             file.path + "/*.js",
             "!" + file.path + "/*" + paths.scripts.polyfills,
           ])
-            .pipe(concat(file.relative + ".js"))
+            .pipe(concat(`${paths.bundle}.js`))
             .pipe(jsTasks());
+        } else {
+          console.log("No polyfills");
         }
 
-        // Grab all files and concatenate them
-        // If separate polyfills enabled, this will have .polyfills in the filename
+        console.log("Grab all files and concatenate them");
+        console.log(
+          "If separate polyfills enabled, this will have .polyfills in the filename"
+        );
+
         src(file.path + "/*.js")
           .pipe(concat(file.relative + suffix + ".js"))
           .pipe(jsTasks());
@@ -178,7 +188,7 @@ var buildScripts = function (done) {
         return stream;
       }
 
-      // Otherwise, process the file
+      console.log("Otherwise, process the file");
       return stream.pipe(jsTasks());
     })
   );
@@ -240,7 +250,7 @@ var buildStyles = function (done) {
         }),
       ])
     )
-    .pipe(concat(paths.styles.concat))
+    .pipe(concat(`${paths.bundle}.min.css`))
     .pipe(dest(paths.styles.output));
 };
 
@@ -349,6 +359,7 @@ exports.default = series(
   parallel(
     buildScripts,
     lintScripts,
+    //bundleScripts,
     buildStyles,
     buildSVGs,
     copyFontAwesome,
