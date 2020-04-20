@@ -68,7 +68,6 @@
         .nav-item__inactive {
             display: none !important;
         }
-		*{box-sizing:border-box}body{margin:0;padding:0;font-size:1rem;font-weight:400;line-height:1.6;min-width:300px}.font-Montserrat{font-family:Montserrat,sans-serif}img{width:100%;max-width:100%;display:block}a,h1{font-weight:700}.text-center{text-align:center}.text-tiny{font-size:.825rem}.main-grid{display:grid;grid-template-columns:minmax(1em,1fr) minmax(0,800px) minmax(1em,1fr)}@media (min-width:600px){.main-grid{grid-template-columns:minmax(1em,1fr) repeat(3,minmax(145px,320px)) minmax(1em,1fr);-moz-column-gap:2em;column-gap:2em}}@media (min-width:800px){.main-grid{grid-template-columns:minmax(5em,1fr) repeat(6,minmax(95px,200px)) minmax(5em,1fr);-moz-column-gap:1em;column-gap:1em}}.center-body{display:flex;flex-direction:column;align-content:center;justify-items:center;justify-content:center;height:100vh}body{color:#000}h1,p{margin:0}h1{padding:1em .5em}p{padding-bottom:2em}p:last-child{padding:0}footer,main{padding-bottom:2em;background-color:hsla(0,0%,100%,.46)}body{background-image:url(../img/bg-1900w.jpg)}#app>*{grid-column:2/-2}.loader-icon{width:4rem;margin:0 auto}@media (min-width:800px){#app>*{grid-column:3/-3}}@media (min-width:1200px){#app>*{grid-column:4/-4}}a{text-transform:lowercase}
     </style>
 </head>
 
@@ -77,21 +76,28 @@
         <div v-if="loading" class="loading-screen">
             <p><img class="loader-icon" src="svg/three-dots.svg" title="Loading... En cours de chargement..." /></p>
         </div>
-        <div v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
-            <header></header>
-            <main class="">
-                <h1>{{ data.Sections.main.h1Title }}</h1>
-            </main>
-            <footer class="">
-                <p>{{ data.Sections.footer.pAuthor }}</p>
-                <a class="fine-print" :href="data.Sections.footer.aRepoLinkHref" rel="noopener" target="_blank">
-                    <i class="fab fa-github"></i>
-                    {{ data.Sections.footer.aRepoLinkText }}
-                </a>
-                <p class="text-tiny credits" v-html="data.Sections.footer.pCreditIntroHtml"></p>
-                <p class="text-tiny unsplash" v-html="data.Sections.footer.pUnsplashHtml"></p>
-            </footer>
-        </div>
+
+        <header v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
+            <nav id="nav">
+                <ul class="container">
+                    <li v-for="menu in data.MenuLang" :key="menu.key" class="nav-item" :class="{ 'nav-item__inactive' : !menu.isActive }">
+                        <a :href="menu.href" :title="menu.value">{{ menu.value }}</a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
+            <h1>{{ data.Sections.main.h1Title }}</h1>
+        </main>
+        <footer v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
+            <p>{{ data.Sections.footer.pAuthor }}</p>
+            <a class="fine-print" :href="data.Sections.footer.aRepoLinkHref" rel="noopener" target="_blank">
+                <i class="fab fa-github"></i>
+                {{ data.Sections.footer.aRepoLinkText }}
+            </a>
+            <p class="text-tiny credits" v-html="data.Sections.footer.pCreditIntroHtml"></p>
+            <p class="text-tiny unsplash" v-html="data.Sections.footer.pUnsplashHtml"></p>
+        </footer>
     </div>
     <script src="js/gsheet2json.min.js"></script>
     <script src="js/vue.min.js"></script>
