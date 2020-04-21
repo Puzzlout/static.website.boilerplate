@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/Puzzlout/static.website.boilerplate/compare/v1.0.1...v1.4.0) (2020-04-21)
+
+
+### Features
+
+* add critical css ([#14](https://github.com/Puzzlout/static.website.boilerplate/issues/14)) ([#15](https://github.com/Puzzlout/static.website.boilerplate/issues/15)) ([d41ddfe](https://github.com/Puzzlout/static.website.boilerplate/commit/d41ddfe6d1fc929286992e5067784b7ddc2d1426))
+
 ## [1.3.0](https://github.com/Puzzlout/static.website.boilerplate/compare/v1.0.1...v1.3.0) (2020-04-13)
 
 
