@@ -1,58 +1,347 @@
+/*===================================*/
+/* Theme 1 */
+/* Colors */
+$color-light: #fff;
+$color-dark: #000;
+$color-accent: #184DEC;
+$bg-color-light: $color-light;
+$bg-color-footer: #d9e1e8;
+$bg-color-dark: $color-dark;
+$bg-color-dark-alpha: #ffffffaa;
+$bg-color-accent: $color-accent;
+$text-color: $color-dark;
+$bd-color: #343838;
+$btn-shadow-color-start: #194DEC;
+$btn-shadow-color-end: #8ec4f0;
+$hero-bg-color: rgba(52, 56, 56, 0.5);
+/* Font-size */
+$fs-h1: 2rem;
+$fs-h2: 1.6rem;
+$fs-h3: 1.125rem;
+$fs-p: 1rem;
+$fs-logo: 1.4rem;
+$fs-social-link: 2rem;
+$fs-fine-print: 0.825rem;
+/* Animations */
+$text-scale: 1;
+$text-scaled: 1.1;
+$text-scale-time: 250ms;
+/* End - Theme 1 */
+
 .theme-color-light {
-  color: #fff;
+  color: $color-light;
 }
 
 .theme-color-dark {
-  color: #000;
+  color: $color-dark;
 }
 
 .theme-bg-light {
-  background-color: #fff;
+  background-color: $bg-color-light;
 }
 
 .theme-bg-dark {
-  background-color: #000;
+  background-color: $bg-color-dark;
 }
 
 .theme-color-accent {
-  color: #ffe600;
+  color: $color-accent;
 }
 
 .theme-bg-accent {
-  background-color: #ffe600;
+  background-color: $bg-color-accent;
 }
 
 .theme-bb-accent {
-  border-bottom: 2px solid #ffe600;
+  border-bottom: 2px solid $color-accent;
 }
 
 .theme-bb-accent:hover {
-  border-bottom: 2px solid #fff;
+  border-bottom: 2px solid $color-light;
 }
 
 body {
-  color: #000;
+  color: $color-dark;
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+/*===================================*/
+/* Typography */
+/* General Typography */
+.content {
+  background-color: $bg-color-dark-alpha;
+  color: $text-color;
 }
 
 h1,
-p {
+h2 {
   margin: 0;
 }
 
-h1 {
-  padding: 1em 0.5em;
+.logo-accent,
+.logo-light {
+  font-size: $fs-logo;
+}
+
+h2 {
+  margin-bottom: 0;
+  text-align: left;
+}
+
+h2::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 2px;
+  background-color: $color-accent;
+  margin-top: 0.25em;
+}
+
+.h2-title-underline-center {
+  text-align: center;
+}
+
+.h2-title-underline-center::after {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 p {
-  padding-bottom: 2em;
+  color: $text-color;
 }
 
-p:last-child {
-  padding: 0;
+/* Header */
+
+/* Navigation */
+
+nav {
+  text-align: center;
+  margin-top: 0.825rem;
 }
 
-main,
+.nav-link {
+  text-decoration: none;
+  font-size: $fs-p;
+  font-weight: 700;
+  line-height: 1em;
+  color: $color-light;
+  background-color: $bg-color-dark;
+  margin: 1em 0;
+  padding: 0.5em;
+  display: inline-block;
+}
+
+.current {
+  padding-bottom: 2px;
+  border-bottom: 2px $color-accent solid;
+}
+
+.current:hover {
+  border-bottom: 2px $color-light solid;
+}
+
+/* Hero */
+.hero-title,
+.hero-title+p {
+  background-color: $hero-bg-color;
+  border-radius: 2px;
+  padding: 0.5em;
+}
+
+.hero-title+p {
+  letter-spacing: 2;
+  font-size: $fs-p * 1.25;
+}
+
+/* Skills */
+.article-description {
+  text-align: center;
+}
+
+.article-description:last-child {
+  margin-bottom: 0;
+}
+
+/* Footer */
 footer {
-  padding-bottom: 2em;
-  background-color: #ffffff75;
+  background-color: $bg-color-footer;
+  text-align: center;
 }
+
+.social-link {
+  color: $color-dark;
+  font-size: $fs-social-link;
+  margin: 0 0.25em;
+}
+
+.social-link:hover,
+.social-link:active,
+.social-link:focus {
+  color: $color-accent;
+  border-radius: 10em;
+  padding: 5px 10px;
+}
+
+.copyright {
+  font-size: $fs-fine-print;
+}
+
+/* Breakpoint: 360px */
+@media (max-width: 360px) {
+  h1 {
+    font-size: $fs-h1 * .825;
+  }
+
+  h2 {
+    font-size: $fs-h2 * .825;
+  }
+
+  p {
+    font-size: $fs-p * .825;
+  }
+
+  .nav-link {
+    font-size: $fs-p * 1.125;
+  }
+
+}
+
+/* Breakpoint: 600px */
+@media (max-width: 600px) {
+  .nav-list {
+    background-color: $bg-color-dark;
+  }
+
+  .nav-link {
+    font-size: $fs-p * 1.5;
+  }
+
+}
+
+@media (min-width: 600px) {
+
+  .nav-link:hover,
+  .nav-link:focus,
+  .nav-link:active {
+    transform: scale($text-scaled + .1);
+  }
+}
+
+/* Breakpoint: 1400px */
+@media (min-width: 1400px) {
+
+  .logo-accent,
+  .logo-light {
+    font-size: $fs-logo * 1.25;
+  }
+
+  h1 {
+    font-size: $fs-h1 * 1.25;
+  }
+
+  h2 {
+    font-size: $fs-h2 * 1.25;
+  }
+
+  p,
+  .nav-link {
+    font-size: $fs-p * 1.25;
+  }
+
+
+}
+
+/* End - Typography */
+/*===================================*/
+
+/*===================================*/
+/* Interactive elements */
+
+a,
+a i {
+  transform: scale($text-scale);
+  transition: transform $text-scale-time;
+}
+
+a:hover,
+a:focus,
+a:active,
+a i:hover,
+a i:focus,
+a i:active {
+  transform: scale($text-scaled);
+}
+
+a:hover,
+a:focus {
+  color: $color-accent;
+  background-color: $bg-color-light;
+}
+
+.btn {
+  text-transform: uppercase;
+}
+
+button,
+.btn,
+input,
+textarea {
+  border: 0;
+  display: inline-block;
+  border-radius: 2px;
+  padding: 0.5em 1.75em;
+  transform: scale($text-scale);
+  transition: transform $text-scale-time;
+  cursor: pointer;
+  text-decoration: none;
+  justify-self: start;
+}
+
+input,
+textarea {
+  border: 1px solid;
+}
+
+button:hover,
+button:focus,
+button:active,
+.btn:hover,
+.btn:focus,
+.btn:active {
+  transform: scale($text-scaled);
+}
+
+button:hover,
+button:focus,
+button:active,
+.btn:hover,
+.btn:focus,
+.btn:active,
+input:hover,
+input:active,
+input:focus,
+textarea:hover,
+textarea:active,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 1px $btn-shadow-color-start, 0 0 0 0.1rem $btn-shadow-color-end;
+}
+
+.close-nav:hover,
+.close-nav:focus,
+.close-nav:active {
+  background-color: $bg-color-accent;
+}
+
+
+.nav-link:hover,
+.nav-link:active,
+.nav-link:focus {
+  transform: scale($text-scaled);
+  border-radius: 2px;
+  padding: 0.75em;
+}
+
+/* End - Interactive elements */
+/* End - Theme */
+/*===================================*/

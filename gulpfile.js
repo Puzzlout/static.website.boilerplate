@@ -14,7 +14,7 @@ var settings = {
   reload: true,
   useFontAwesome: true,
   useVue: true,
-  useGsheets2Json: true,
+  useGsheetCms: true,
 };
 
 /**
@@ -60,8 +60,11 @@ var paths = {
     input: "node_modules/vue/dist/vue.min.js",
     output: "dist/js/",
   },
-  gsheets2json: {
-    input: "node_modules/gsheets2json/dist/gsheet2json.min.js",
+  gsheetcms: {
+    input: [
+      "node_modules/gsheets2json/dist/gsheet2json.min.js",
+      "node_modules/gsheetcmslight/dist/js/gsheetscms.min.js",
+    ],
     output: "dist/js/",
   },
   reload: "./dist/",
@@ -211,11 +214,11 @@ var copyVue = function (done) {
 
   return src(paths.vue.input).pipe(dest(paths.vue.output));
 };
-//copy gsheets2json library if needed
-var copyGsheets2Json = function (done) {
-  if (!settings.useGsheets2Json) return done();
+//copy gsheetcms and gsheets2json libraries if needed
+var copyGsheetCms = function (done) {
+  if (!settings.useGsheetCms) return done();
 
-  return src(paths.gsheets2json.input).pipe(dest(paths.gsheets2json.output));
+  return src(paths.gsheetcms.input).pipe(dest(paths.gsheetcms.output));
 };
 // Process, lint, and minify Sass files
 var buildStyles = function (done) {
@@ -364,7 +367,7 @@ exports.default = series(
     buildSVGs,
     copyFontAwesome,
     copyVue,
-    copyGsheets2Json,
+    copyGsheetCms,
     copyFiles,
     processImages
   )
