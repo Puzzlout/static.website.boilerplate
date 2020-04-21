@@ -38,6 +38,8 @@ var app = new Vue({
   },
   created: function () {
     this.loadSheetData();
-    if (!this.data) throw new Error("No data loaded");
+    if (!this.data) {
+      throw new Error("No data loaded");
+    }
   },
 });
