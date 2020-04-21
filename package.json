@@ -59,7 +59,7 @@
     "vue": "^2.6.11"
   },
   "dependencies": {
-    "gsheetcmslight": "^1.1.0",
+    "gsheetcmslight": "^1.2.1",
     "gsheets2json": "^1.0.0"
   }
 }

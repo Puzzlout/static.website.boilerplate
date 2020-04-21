@@ -22,12 +22,12 @@
     <meta name="description" content="A boilerplate to build a static website with gulp.">
 
     <!-- To optimise the SEO using Open Graph protocol: https://ogp.me/, uncomment below -->
-    <!--<meta property="og:title" content="A website built with Gulp">
+    <meta property="og:title" content="A website built with Gulp">
     <meta property="og:description" content="Enter your search criteria: Search    ">
     <meta property="og:url" content="index.html">
     <meta property="og:type" content="website">
     <meta property="og:image" content="img/android-chrome-192x192.png">
-    <meta property="og:image:alt" content="A website built with Gulp">-->
+    <meta property="og:image:alt" content="A website built with Gulp">
 
     <!-- https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started -->
     <meta name="twitter:card" content="summary">
@@ -80,23 +80,23 @@
         <header v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
             <nav id="nav">
                 <div class="languages">
-                    <div v-for="language in data.MenuLang" :key="language.key" class="nav-item" :class="{ 'nav-item__inactive' : !language.isActive }">
+                    <div v-for="language in content.MenuLang" :key="language.key" class="nav-item" :class="{ 'nav-item__inactive' : !language.isActive }">
                         <a class="nav-link" :href="language.href" :title="language.value">{{ language.value }}</a>
                     </div>
                 </div>
             </nav>
         </header>
         <main v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
-            <h1>{{ data.Sections.main.h1Title }}</h1>
+            <h1>{{ content.Sections.main.h1Title }}</h1>
         </main>
         <footer v-if="!loading" class="content" :class="{ 'content-loaded' : !loading }">
-            <p>{{ data.Sections.footer.pAuthor }}</p>
-            <a class="fine-print" :href="data.Sections.footer.aRepoLinkHref" rel="noopener" target="_blank">
+            <p>{{ content.Sections.footer.pAuthor }}</p>
+            <a class="fine-print" :href="content.Sections.footer.aRepoLinkHref" rel="noopener" target="_blank">
                 <i class="fab fa-github"></i>
-                {{ data.Sections.footer.aRepoLinkText }}
+                {{ content.Sections.footer.aRepoLinkText }}
             </a>
-            <p class="text-tiny credits" v-html="data.Sections.footer.pCreditIntroHtml"></p>
-            <p class="text-tiny unsplash" v-html="data.Sections.footer.pUnsplashHtml"></p>
+            <p class="text-tiny credits" v-html="content.Sections.footer.pCreditIntroHtml"></p>
+            <p class="text-tiny unsplash" v-html="content.Sections.footer.pUnsplashHtml"></p>
         </footer>
     </div>
     <script src="js/gsheet2json.min.js"></script>
